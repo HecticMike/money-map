@@ -15,6 +15,7 @@ interface ExpenseFormProps {
   initialExpense?: Expense | null;
   onSubmit: (draft: ExpenseDraft) => void;
   onCancel?: () => void;
+  currencySymbol: string;
 }
 
 const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'food';
@@ -41,7 +42,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   mode = 'create',
   initialExpense = null,
   onSubmit,
-  onCancel
+  onCancel,
+  currencySymbol
 }) => {
   const {
     register,
@@ -76,7 +78,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     <form
       onSubmit={handleSubmit(submitHandler)}
       className="space-y-6"
-      aria-label={mode === 'edit' ? 'Edit expense form' : 'Add expense form'}
+      aria-label={mode === 'edit' ? 'Edit entry form' : 'Add entry form'}
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <label className="flex flex-col gap-2">
@@ -93,7 +95,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
               min: { value: 0.01, message: 'Amount must be above zero' }
             })}
             className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-base shadow-sm focus:border-brand-accent focus:outline-none focus:ring-2 focus:ring-brand-accent/20"
-            placeholder="e.g. 45.20"
+            placeholder={`${currencySymbol}45.20`}
           />
           {errors.amount != null ? (
             <span className="text-sm text-rose-500">{errors.amount.message}</span>
@@ -148,7 +150,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           disabled={isSubmitting}
           className="inline-flex items-center justify-center rounded-xl bg-brand-accent px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-accent/20 transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:bg-slate-300"
         >
-          {mode === 'edit' ? 'Update expense' : 'Add expense'}
+          {mode === 'edit' ? 'Update entry' : 'Add entry'}
         </button>
         {mode === 'edit' && onCancel != null ? (
           <button
@@ -163,3 +165,4 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     </form>
   );
 };
+

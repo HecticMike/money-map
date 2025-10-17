@@ -19,9 +19,10 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 
 interface SpendingChartsProps {
   stats: ExpenseStats;
+  formatAmount: (value: number) => string;
 }
 
-export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats }) => {
+export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmount }) => {
   const categoryChartData = useMemo(() => {
     const labels: string[] = [];
     const data: number[] = [];
@@ -55,11 +56,20 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats }) => {
       plugins: {
         legend: {
           position: 'bottom' as const
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              const label = context.label ?? '';
+              const value = typeof context.parsed === 'number' ? context.parsed : 0;
+              return `${label}: ${formatAmount(value)}`;
+            }
+          }
         }
       },
       cutout: '60%'
     }),
-    []
+    [formatAmount]
   );
 
   const trendChartData = useMemo(() => {
@@ -86,6 +96,11 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats }) => {
       plugins: {
         legend: {
           display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => formatAmount(typeof context.parsed.y === 'number' ? context.parsed.y : 0)
+          }
         }
       },
       scales: {
@@ -101,14 +116,12 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats }) => {
         y: {
           ticks: {
             callback: (value: number | string) =>
-              typeof value === 'number'
-                ? value.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
-                : value
+              typeof value === 'number' ? formatAmount(value) : value
           }
         }
       }
     }),
-    []
+    [formatAmount]
   );
 
   return (
@@ -133,10 +146,11 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats }) => {
           </div>
         ) : (
           <p className="mt-4 text-sm text-slate-500">
-            Add expenses across different months to see your trend.
+            Add entries across different months to see your trend.
           </p>
         )}
       </div>
     </div>
   );
 };
+

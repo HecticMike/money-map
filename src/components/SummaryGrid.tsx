@@ -4,12 +4,11 @@ import { CATEGORY_META, type Expense, type ExpenseStats } from '../types';
 interface SummaryGridProps {
   stats: ExpenseStats;
   expenses: Expense[];
+  formatAmount: (value: number) => string;
+  currencyLabel: string;
 }
 
-const currency = (value: number) =>
-  value.toLocaleString(undefined, { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
-
-export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses }) => {
+export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses, formatAmount, currencyLabel }) => {
   const monthsCount = new Set(stats.monthlyTotals.map((item) => item.month)).size || 1;
   const averagePerMonth = stats.total / monthsCount;
 
@@ -25,16 +24,17 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses }) => 
     <div className="grid gap-5 md:grid-cols-3">
       <div className="rounded-2xl bg-white p-6 shadow-card">
         <p className="text-sm font-medium uppercase tracking-wider text-slate-500">Total spent</p>
-        <p className="mt-2 text-3xl font-semibold text-slate-900">{currency(stats.total)}</p>
+        <p className="mt-2 text-3xl font-semibold text-slate-900">{formatAmount(stats.total)}</p>
         <p className="mt-3 text-sm text-slate-500">
-          Average per month: <span className="font-medium text-slate-700">{currency(averagePerMonth)}</span>
+          Average per month: <span className="font-medium text-slate-700">{formatAmount(averagePerMonth)}</span>
         </p>
+        <p className="mt-4 text-xs uppercase tracking-wide text-slate-400">Currency: {currencyLabel}</p>
       </div>
       <div className="rounded-2xl bg-white p-6 shadow-card">
         <p className="text-sm font-medium uppercase tracking-wider text-slate-500">Top category</p>
         <p className="mt-2 text-3xl font-semibold text-slate-900">{topCategoryMeta.label}</p>
         <p className="mt-3 text-sm text-slate-500">
-          {currency(topCategoryValue)} spent here — keep an eye on it.
+          {formatAmount(topCategoryValue)} spent here - keep an eye on it.
         </p>
       </div>
       <div className="rounded-2xl bg-white p-6 shadow-card">
@@ -42,7 +42,7 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses }) => 
         {lastExpense != null ? (
           <>
             <p className="mt-2 text-3xl font-semibold text-slate-900">
-              {currency(lastExpense.amount)}
+              {formatAmount(lastExpense.amount)}
             </p>
             <p className="mt-3 text-sm text-slate-500">
               {CATEGORY_META[lastExpense.category].label} on{' '}
@@ -50,9 +50,11 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses }) => 
             </p>
           </>
         ) : (
-          <p className="mt-2 text-lg font-semibold text-slate-600">Add your first expense</p>
+          <p className="mt-2 text-lg font-semibold text-slate-600">Add your first entry</p>
         )}
       </div>
     </div>
   );
 };
+
+

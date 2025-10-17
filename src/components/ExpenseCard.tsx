@@ -5,9 +5,10 @@ interface ExpenseCardProps {
   expense: Expense;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
+  formatAmount: (value: number) => string;
 }
 
-export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDelete }) => {
+export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDelete, formatAmount }) => {
   const categoryMeta = CATEGORY_META[expense.category];
   const formattedDate = format(new Date(expense.date), 'MMM d, yyyy');
 
@@ -20,7 +21,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDel
     >
       <div className="flex flex-1 flex-col gap-1">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-lg font-semibold text-slate-800">${expense.amount.toFixed(2)}</span>
+          <span className="text-lg font-semibold text-slate-800">{formatAmount(expense.amount)}</span>
           <span
             className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600"
             style={{ backgroundColor: `${categoryMeta.color}1a`, color: categoryMeta.color }}
