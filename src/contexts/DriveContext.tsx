@@ -1,10 +1,12 @@
+// src/contexts/DriveContext.tsx
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useState
+  useState,
+  ReactNode
 } from 'react';
 import {
   GoogleOAuthProvider,
@@ -34,6 +36,7 @@ interface DriveContextValue {
   setStatus: (status: DriveStatus) => void;
   setError: (message: string | null) => void;
   error: string | null;
+  fetchDriveData?: () => void;
 }
 
 const noop = () => {};
@@ -57,17 +60,28 @@ const DEFAULT_CONTEXT: DriveContextValue = {
 const DriveContext = createContext<DriveContextValue>(DEFAULT_CONTEXT);
 
 const STORAGE_KEY = 'money-map-drive-metadata';
+const DATA_STORAGE_KEY = 'money-map-drive-data';
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILE_NAME = 'money-map-data.json';
+const GOOGLE_CLIENT_ID_PATTERN =
+  /[0-9]+-[0-9a-z\-_]+\.apps\.googleusercontent\.com/i;
 
+const sanitizeGoogleClientId = (raw?: string | null): string | null => {
+  if (raw == null) return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  const match = trimmed.match(GOOGLE_CLIENT_ID_PATTERN);
+  if (match == null) return null;
+  return match[0];
+};
+
+// Persist metadata in localStorage
 const readMetadata = (): DriveMetadata => {
-  if (typeof window === 'undefined') {
-    return { fileId: null, lastSyncedAt: null };
-  }
+  if (typeof window === 'undefined') return { fileId: null, lastSyncedAt: null };
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw == null) return { fileId: null, lastSyncedAt: null };
-    const parsed = JSON.parse(raw) as DriveMetadata & { version?: number; fileName?: string };
+    if (!raw) return { fileId: null, lastSyncedAt: null };
+    const parsed = JSON.parse(raw) as DriveMetadata & { fileName?: string };
     return {
       fileId: parsed.fileName === DRIVE_FILE_NAME ? parsed.fileId ?? null : parsed.fileId ?? null,
       lastSyncedAt: parsed.lastSyncedAt ?? null
@@ -77,23 +91,39 @@ const readMetadata = (): DriveMetadata => {
   }
 };
 
-const writeMetadata = (metadata: DriveMetadata): void => {
+const writeMetadata = (metadata: DriveMetadata) => {
   if (typeof window === 'undefined') return;
   try {
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({
-        ...metadata,
-        fileName: DRIVE_FILE_NAME,
-        version: 1
-      })
+      JSON.stringify({ ...metadata, fileName: DRIVE_FILE_NAME, version: 1 })
     );
-  } catch (error) {
-    console.warn('Unable to persist Google Drive metadata', error);
+  } catch {
+    console.warn('Unable to persist metadata');
   }
 };
 
-const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const writeDriveData = (data: any) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    console.warn('Unable to persist Drive data');
+  }
+};
+
+const readDriveData = (): any | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(DATA_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+// Provider handling login and metadata
+const DriveAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<TokenResponse | null>(null);
   const [status, setStatus] = useState<DriveStatus>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +140,7 @@ const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     },
     onError: () => {
       setStatus('error');
-      setError('Google sign-in was cancelled or failed. Please try again.');
+      setError('Google sign-in failed. Please try again.');
     }
   });
 
@@ -126,23 +156,20 @@ const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     setError(null);
   }, []);
 
-  const setFileId = useCallback(
-    (fileId: string | null) => {
-      setMetadata((previous) => ({ ...previous, fileId }));
-    },
-    [setMetadata]
-  );
+  const setFileId = useCallback((fileId: string | null) => {
+    setMetadata((prev) => ({ ...prev, fileId }));
+  }, []);
 
-  const setLastSyncedAt = useCallback(
-    (timestamp: string | null) => {
-      setMetadata((previous) => ({ ...previous, lastSyncedAt: timestamp }));
-    },
-    [setMetadata]
-  );
+  const setLastSyncedAt = useCallback((timestamp: string | null) => {
+    setMetadata((prev) => ({ ...prev, lastSyncedAt: timestamp }));
+  }, []);
 
-  useEffect(() => {
-    writeMetadata(metadata);
-  }, [metadata]);
+  useEffect(() => writeMetadata(metadata), [metadata]);
+
+  const fetchDriveData = useCallback(() => {
+    const data = readDriveData();
+    console.log('Fetched Drive data', data);
+  }, []);
 
   const value = useMemo<DriveContextValue>(
     () => ({
@@ -158,7 +185,8 @@ const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       setLastSyncedAt,
       setStatus,
       setError,
-      error
+      error,
+      fetchDriveData
     }),
     [
       token?.access_token,
@@ -169,7 +197,8 @@ const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       metadata.lastSyncedAt,
       setFileId,
       setLastSyncedAt,
-      error
+      error,
+      fetchDriveData
     ]
   );
 
@@ -178,32 +207,44 @@ const DriveAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
 interface DriveProviderProps {
   clientId?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const DriveProvider: React.FC<DriveProviderProps> = ({ clientId, children }) => {
-  const disabledValue = useMemo(
-    () => ({
-      ...DEFAULT_CONTEXT,
-      isEnabled: false,
-      status: 'disabled' as DriveStatus
-    }),
-    []
-  );
+  const normalizedClientId = useMemo(() => sanitizeGoogleClientId(clientId ?? null), [clientId]);
 
-  if (clientId == null || clientId.trim().length === 0) {
+  const disabledValue = useMemo<DriveContextValue>(() => {
+    const base = {
+      ...DEFAULT_CONTEXT,
+      isEnabled: false as const
+    };
+
+    if (clientId == null || clientId.trim().length === 0) {
+      return base;
+    }
+
+    if (normalizedClientId == null) {
+      return {
+        ...base,
+        error:
+          'Google Drive sync disabled: the VITE_GOOGLE_CLIENT_ID value looks malformed. Use the client ID that ends with .apps.googleusercontent.com.'
+      };
+    }
+
+    return base;
+  }, [clientId, normalizedClientId]);
+
+  if (normalizedClientId == null) {
     return <DriveContext.Provider value={disabledValue}>{children}</DriveContext.Provider>;
   }
 
   return (
-    <GoogleOAuthProvider clientId={clientId}>
+    <GoogleOAuthProvider clientId={normalizedClientId}>
       <DriveAuthProvider>{children}</DriveAuthProvider>
     </GoogleOAuthProvider>
   );
 };
 
-export const useDriveContext = (): DriveContextValue => {
-  return useContext(DriveContext);
-};
-
+export const useDriveContext = (): DriveContextValue => useContext(DriveContext);
+export const useDriveSync = (): Pick<DriveContextValue, 'fetchDriveData'> => ({ fetchDriveData: useContext(DriveContext).fetchDriveData });
 export const DRIVE_FILE_TITLE = DRIVE_FILE_NAME;
