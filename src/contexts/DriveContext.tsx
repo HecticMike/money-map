@@ -213,6 +213,12 @@ interface DriveProviderProps {
 export const DriveProvider: React.FC<DriveProviderProps> = ({ clientId, children }) => {
   const normalizedClientId = useMemo(() => sanitizeGoogleClientId(clientId ?? null), [clientId]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).__MONEY_MAP_CLIENT_ID = normalizedClientId;
+    }
+  }, [normalizedClientId]);
+
   const disabledValue = useMemo<DriveContextValue>(() => {
     const base = {
       ...DEFAULT_CONTEXT,
