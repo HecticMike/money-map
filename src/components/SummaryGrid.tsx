@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+﻿import { format } from "date-fns";
 import { CATEGORY_META, type Expense, type ExpenseStats } from "../types";
 
 interface SummaryGridProps {
@@ -22,7 +22,7 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses, forma
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-6 shadow-inner shadow-white/5">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Total spent</p>
         <p className="mt-3 text-3xl font-semibold text-white">{formatAmount(stats.total)}</p>
         <p className="mt-4 text-sm text-slate-200">
@@ -32,14 +32,14 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({ stats, expenses, forma
           Currency: {currencyLabel}
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-6 shadow-inner shadow-white/5">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Top category</p>
         <p className="mt-3 text-2xl font-semibold text-white">{topCategoryMeta.label}</p>
         <p className="mt-3 text-sm text-slate-200">
           {formatAmount(topCategoryValue)} spent here - keep an eye on it.
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-white/10 p-6 shadow-inner shadow-white/5">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Latest activity</p>
         {lastExpense != null ? (
           <>
