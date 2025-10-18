@@ -18,7 +18,7 @@ interface ExpenseFormProps {
   currencySymbol: string;
 }
 
-const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'food';
+const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'living_home_groceries';
 
 const toFormValues = (expense?: Expense | null): ExpenseFormValues => {
   if (expense == null) {
