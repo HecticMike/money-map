@@ -130,7 +130,7 @@ export const App: React.FC = () => {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-sky-500">Money Map</p>
             <h1 className="text-2xl font-semibold text-slate-900 md:text-3xl">
-              Visualise your spending, own your future.
+              A money map in your hands.
             </h1>
           </div>
           <nav className="flex flex-wrap gap-2 text-sm font-medium text-slate-500">
@@ -255,7 +255,7 @@ export const App: React.FC = () => {
               <h3 className="text-lg font-semibold text-slate-900">Offline-first by design</h3>
               <p className="mt-3 text-sm text-slate-500">
                 Money Map works without a connection, saving updates to local storage and syncing when you&apos;re ready.
-                Install it as a Progressive Web App for a native, on-the-go experience that fits an iPhone 15 or your
+                Install it as a Progressive Web App for a native, on-the-go experience that fits an iPhone or your
                 daily laptop setup.
               </p>
             </section>
