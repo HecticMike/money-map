@@ -1,5 +1,5 @@
-import { type Expense } from '../types';
-import { ExpenseCard } from './ExpenseCard';
+import { type Expense } from "../types";
+import { ExpenseCard } from "./ExpenseCard";
 
 interface ExpenseListProps {
   expenses: Expense[];
@@ -11,7 +11,7 @@ interface ExpenseListProps {
 export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDelete, formatAmount }) => {
   if (expenses.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center text-sm text-slate-500">
+      <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-12 text-center text-sm text-slate-200">
         No entries yet. Add your first entry to build your Money Map.
       </div>
     );
@@ -25,4 +25,3 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDe
     </div>
   );
 };
-

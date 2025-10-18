@@ -154,3 +154,4 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
   );
 };
 
+
