@@ -16,6 +16,11 @@ import { Doughnut, Line } from 'react-chartjs-2';
 import { CATEGORY_META, type ExpenseStats } from '../types';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, TimeScale, Filler);
+ChartJS.defaults.color = '#facc15';
+ChartJS.defaults.font = {
+  family: '"Space Grotesk", sans-serif',
+  size: 11
+};
 
 interface SpendingChartsProps {
   stats: ExpenseStats;
@@ -43,8 +48,8 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
           label: 'Income vs outgoings',
           data,
           backgroundColor: colors,
-          borderWidth: 2,
-          borderColor: '#fff'
+          borderWidth: 1,
+          borderColor: '#1f2647'
         }
       ]
     };
@@ -55,7 +60,14 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
       responsive: true,
       plugins: {
         legend: {
-          position: 'bottom' as const
+          position: 'bottom' as const,
+          labels: {
+            color: '#fef3c7',
+            font: {
+              family: '"Space Grotesk", sans-serif',
+              size: 10
+            }
+          }
         },
         tooltip: {
           callbacks: {
@@ -64,7 +76,12 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
               const value = typeof context.parsed === 'number' ? context.parsed : 0;
               return `${label}: ${formatAmount(value)}`;
             }
-          }
+          },
+          backgroundColor: '#1f2647',
+          borderColor: '#facc15',
+          borderWidth: 1,
+          titleColor: '#facc15',
+          bodyColor: '#fef3c7'
         }
       },
       cutout: '60%'
@@ -79,9 +96,9 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
         {
           label: 'Monthly spend',
           data: stats.monthlyTotals.map((item) => item.total),
-          borderColor: '#0ea5e9',
-          backgroundColor: 'rgba(14,165,233,0.2)',
-          pointBackgroundColor: '#0ea5e9',
+          borderColor: '#facc15',
+          backgroundColor: 'rgba(250, 204, 21, 0.15)',
+          pointBackgroundColor: '#facc15',
           fill: true,
           tension: 0.35
         }
@@ -99,8 +116,14 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
         },
         tooltip: {
           callbacks: {
-            label: (context: any) => formatAmount(typeof context.parsed.y === 'number' ? context.parsed.y : 0)
-          }
+            label: (context: any) =>
+              formatAmount(typeof context.parsed.y === 'number' ? context.parsed.y : 0)
+          },
+          backgroundColor: '#1f2647',
+          borderColor: '#facc15',
+          borderWidth: 1,
+          titleColor: '#facc15',
+          bodyColor: '#fef3c7'
         }
       },
       scales: {
@@ -111,12 +134,27 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
           },
           grid: {
             display: false
+          },
+          ticks: {
+            color: '#fef3c7',
+            font: {
+              family: '"Space Grotesk", sans-serif',
+              size: 10
+            }
           }
         },
         y: {
           ticks: {
             callback: (value: number | string) =>
-              typeof value === 'number' ? formatAmount(value) : value
+              typeof value === 'number' ? formatAmount(value) : value,
+            color: '#fef3c7',
+            font: {
+              family: '"Space Grotesk", sans-serif',
+              size: 10
+            }
+          },
+          grid: {
+            color: '#2f355a'
           }
         }
       }

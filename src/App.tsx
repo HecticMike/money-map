@@ -145,7 +145,12 @@ export const App: React.FC = () => {
       <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-4 py-8 md:px-8">
         <div className="flex flex-1 flex-col gap-8 border border-brand-line bg-brand-midnight/80 p-6 shadow-panel md:p-8">
           <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <h1 className="text-4xl font-semibold text-brand-highlight md:text-5xl">Money Map</h1>
+            <div className="flex items-end gap-4">
+              <div className="grid h-16 w-16 place-items-center border border-brand-highlight bg-brand-highlight text-3xl font-semibold text-brand-midnight md:h-20 md:w-20 md:text-4xl">
+                M
+              </div>
+              <h1 className="text-3xl font-semibold text-brand-highlight md:text-4xl">Money Map</h1>
+            </div>
             <div className="flex items-center gap-4 border border-brand-line bg-brand-ocean/60 px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-brand-highlight md:text-xs">
               <span className="text-brand-neutral">Currency</span>
               <div className="flex gap-2">
@@ -168,13 +173,13 @@ export const App: React.FC = () => {
             </div>
           </header>
 
-          <nav className="flex items-center justify-center overflow-x-auto border border-brand-line bg-brand-ocean/80 px-2 py-2 text-[11px] uppercase tracking-[0.22em] text-brand-highlight md:text-xs">
+          <nav className="flex items-center justify-center overflow-x-auto border border-brand-line bg-brand-ocean/80 px-2 py-1.5 text-[10px] uppercase tracking-[0.22em] text-brand-highlight md:text-xs">
             <div className="flex w-full flex-nowrap items-center justify-center gap-2 px-1">
               {navItems.map((item) => (
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="border border-transparent px-3 py-2 text-brand-highlight transition hover:border-brand-highlight hover:text-brand-amber whitespace-nowrap"
+                  className="border border-transparent px-3 py-1.5 text-brand-highlight transition hover:border-brand-highlight hover:text-brand-amber whitespace-nowrap"
                 >
                   {item.label}
                 </a>

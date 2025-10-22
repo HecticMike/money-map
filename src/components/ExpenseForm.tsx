@@ -139,7 +139,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         <input
           type="date"
           {...register('date', { required: true })}
-          className="w-full border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
+          className="w-full appearance-none border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
         />
         {errors.date != null ? (
           <span className="text-[11px] text-brand-accent">Select a date</span>
