@@ -70,12 +70,14 @@ export const CATEGORY_META: Record<
   leisure_lifestyle_entertainment: { label: 'Entertainment', color: '#ec4899', type: 'expense' },
   leisure_lifestyle_travel_holidays: { label: 'Travel & Holidays', color: '#8b5cf6', type: 'expense' },
   leisure_lifestyle_subscriptions: { label: 'Subscriptions', color: '#94a3b8', type: 'expense' },
-  income_salary: { label: 'Income Â· Salary', color: '#facc15', type: 'income' },
-  income_other: { label: 'Income Â· Other', color: '#bef264', type: 'income' },
+  income_salary: { label: 'Salary', color: '#facc15', type: 'income' },
+  income_other: { label: 'Other income', color: '#bef264', type: 'income' },
   other: { label: 'Other', color: '#94a3b8', type: 'expense' }
 };
 
 export const INCOME_CATEGORIES: ExpenseCategory[] = ['income_salary', 'income_other'];
+
+
 
 
 

@@ -159,16 +159,18 @@ export const App: React.FC = () => {
                 </div>
               </div>
             </div>
-            <nav className="flex items-center justify-between rounded-full border border-white/10 bg-slate-900/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 shadow-inner shadow-black/20 sm:text-sm">
-              {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="rounded-full px-3 py-2 text-slate-300 transition hover:bg-sky-400/20 hover:text-white"
-                >
-                  {item.label}
-                </a>
-              ))}
+            <nav className="flex items-center justify-center rounded-full border border-white/10 bg-slate-900/40 px-2 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 shadow-inner shadow-black/20 sm:text-sm">
+              <div className="flex w-full flex-wrap items-center justify-center gap-2">
+                {navItems.map((item) => (
+                  <a
+                    key={item.id}
+                    href={`#${item.id}`}
+                    className="rounded-full px-3 py-2 text-slate-300 transition hover:bg-sky-400/20 hover:text-white"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
             </nav>
           </header>
 
@@ -271,6 +273,7 @@ export const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 
