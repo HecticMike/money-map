@@ -17,11 +17,11 @@ interface GoogleDriveSyncPanelProps {
 }
 
 const statusTone: Record<DriveStatus, string> = {
-  disabled: 'text-pixel-gold',
-  idle: 'text-pixel-gold',
-  authenticating: 'text-pixel-cyan',
-  syncing: 'text-pixel-cyan',
-  error: 'text-pixel-red',
+  disabled: 'text-brand-highlight',
+  idle: 'text-brand-highlight',
+  authenticating: 'text-brand-neutral',
+  syncing: 'text-brand-neutral',
+  error: 'text-brand-accent',
   success: 'text-emerald-300'
 };
 
@@ -40,19 +40,19 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
   onClearFeedback
 }) => {
   return (
-    <section className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/85 p-5 text-pixel-gold shadow-[0_20px_50px_rgba(5,10,34,0.55)] sm:p-6">
+    <section className="border border-brand-line bg-brand-ocean/80 px-4 py-5 text-brand-highlight shadow-panel sm:px-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <h3 className="text-xs font-semibold uppercase tracking-widest text-pixel-amber sm:text-sm">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-neutral sm:text-sm">
             Google Drive sync
           </h3>
-          <p className="text-[11px] text-pixel-gold">
+          <p className="text-[11px] text-brand-neutral">
             Keep a JSON backup in Drive so your Money Map follows you everywhere.
           </p>
         </div>
         {isEnabled ? (
           <span
-            className={`inline-flex items-center rounded-full border-2 border-pixel-border bg-pixel-dusk/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusTone[status]}`}
+            className={`inline-flex items-center border border-brand-line bg-brand-midnight/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusTone[status]}`}
           >
             {status === 'authenticating'
               ? 'Authorising...'
@@ -67,19 +67,19 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               : 'Disconnected'}
           </span>
         ) : (
-          <span className="inline-flex items-center rounded-full border-2 border-pixel-red bg-pixel-red/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-pixel-red">
+          <span className="inline-flex items-center border border-brand-accent bg-brand-accent/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-brand-accent">
             Disabled
           </span>
         )}
       </header>
 
       {!isEnabled ? (
-        <div className="mt-6 space-y-3 text-[11px] text-pixel-gold">
+        <div className="mt-5 space-y-3 text-[11px] text-brand-highlight">
           <p>
-            Add <code className="rounded border border-pixel-border bg-pixel-midnight px-1 font-mono text-[10px]">VITE_GOOGLE_CLIENT_ID</code> to your
-            <code className="ml-1 rounded border border-pixel-border bg-pixel-midnight px-1 font-mono text-[10px]">.env.local</code> to enable Drive synchronisation.
+            Add <code className="border border-brand-line bg-brand-midnight px-1 font-mono text-[10px]">VITE_GOOGLE_CLIENT_ID</code> to your
+            <code className="ml-1 border border-brand-line bg-brand-midnight px-1 font-mono text-[10px]">.env.local</code> to enable Drive synchronisation.
           </p>
-          <ol className="space-y-1 text-[10px] text-pixel-cyan">
+          <ol className="space-y-1 text-[10px] text-brand-neutral">
             <li>1. Create an OAuth client for a web app in Google Cloud.</li>
             <li>2. Add your development URL (http://localhost:5173) to authorised JavaScript origins.</li>
             <li>3. Restart the dev server after updating environment variables.</li>
@@ -92,7 +92,7 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               <button
                 type="button"
                 onClick={onLogout}
-                className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-dusk/80 px-4 py-2 font-semibold text-pixel-gold transition hover:border-pixel-amber hover:text-pixel-amber"
+                className="inline-flex items-center justify-center border border-brand-line bg-brand-midnight px-4 py-2 font-semibold text-brand-highlight transition hover:text-brand-amber"
               >
                 Sign out
               </button>
@@ -100,7 +100,7 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               <button
                 type="button"
                 onClick={onLogin}
-                className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-amber px-4 py-2 font-semibold text-pixel-midnight transition hover:bg-pixel-gold"
+                className="inline-flex items-center justify-center border border-brand-line bg-brand-highlight px-4 py-2 font-semibold text-brand-midnight transition hover:bg-brand-amber"
               >
                 Connect Google Drive
               </button>
@@ -109,7 +109,7 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               type="button"
               onClick={onPush}
               disabled={!isAuthenticated || isSyncing}
-              className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-amber px-4 py-2 font-semibold text-pixel-midnight transition hover:bg-pixel-gold disabled:cursor-not-allowed disabled:border-pixel-border disabled:bg-pixel-dusk disabled:text-pixel-gold/40"
+              className="inline-flex items-center justify-center border border-brand-line bg-brand-highlight px-4 py-2 font-semibold text-brand-midnight transition hover:bg-brand-amber disabled:cursor-not-allowed disabled:bg-brand-slate/60"
             >
               Push to Drive
             </button>
@@ -117,17 +117,17 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               type="button"
               onClick={onPull}
               disabled={!isAuthenticated || isSyncing}
-              className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-dusk/80 px-4 py-2 font-semibold text-pixel-gold transition hover:border-pixel-amber hover:text-pixel-amber disabled:cursor-not-allowed disabled:border-pixel-border disabled:text-pixel-gold/40"
+              className="inline-flex items-center justify-center border border-brand-line bg-brand-midnight px-4 py-2 font-semibold text-brand-highlight transition hover:text-brand-amber disabled:cursor-not-allowed disabled:text-brand-neutral/40"
             >
               Pull latest backup
             </button>
           </div>
 
-          <div className="mt-6 space-y-2 text-[11px] text-pixel-gold">
+          <div className="mt-6 space-y-2 text-[11px] text-brand-highlight">
             {lastSyncedAt != null ? (
               <p>
                 Last synced{' '}
-                <span className="font-semibold text-pixel-amber">
+                <span className="font-semibold text-brand-neutral">
                   {formatDistanceToNow(new Date(lastSyncedAt), { addSuffix: true })}
                 </span>
               </p>
@@ -135,17 +135,25 @@ export const GoogleDriveSyncPanel: React.FC<GoogleDriveSyncPanelProps> = ({
               <p>No Drive backup yet. Push your entries to create one.</p>
             )}
             {message != null ? (
-              <div className="flex items-start justify-between gap-3 rounded-lg border-2 border-pixel-border bg-emerald-500/15 px-4 py-3 text-[11px] text-emerald-200">
+              <div className="flex items-start justify-between gap-3 border border-brand-line bg-brand-midnight/80 px-4 py-3 text-[11px] text-brand-highlight">
                 <span className="pr-2">{message}</span>
-                <button type="button" onClick={onClearFeedback} className="text-[10px] uppercase tracking-wide text-pixel-cyan">
+                <button
+                  type="button"
+                  onClick={onClearFeedback}
+                  className="text-[10px] uppercase tracking-wide text-brand-neutral"
+                >
                   Dismiss
                 </button>
               </div>
             ) : null}
             {error != null ? (
-              <div className="flex items-start justify-between gap-3 rounded-lg border-2 border-pixel-border bg-pixel-red/20 px-4 py-3 text-[11px] text-pixel-red">
+              <div className="flex items-start justify-between gap-3 border border-brand-line bg-brand-accent/15 px-4 py-3 text-[11px] text-brand-accent">
                 <span className="pr-2">{error}</span>
-                <button type="button" onClick={onClearFeedback} className="text-[10px] uppercase tracking-wide text-pixel-red">
+                <button
+                  type="button"
+                  onClick={onClearFeedback}
+                  className="text-[10px] uppercase tracking-wide"
+                >
                   Dismiss
                 </button>
               </div>

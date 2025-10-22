@@ -11,7 +11,7 @@ interface ExpenseListProps {
 export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDelete, formatAmount }) => {
   if (expenses.length === 0) {
     return (
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/70 px-6 py-10 text-center text-[11px] text-pixel-gold">
+      <div className="border border-brand-line bg-brand-ocean/70 px-5 py-8 text-center text-[11px] text-brand-highlight">
         No entries yet. Add your first entry to build your Money Map.
       </div>
     );

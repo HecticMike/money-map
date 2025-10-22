@@ -33,37 +33,41 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
 
   return (
     <div className="grid gap-3 md:grid-cols-3">
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Net flow</p>
+      <div className="border border-brand-line bg-brand-ocean/70 px-4 py-5 sm:px-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-neutral">Net flow</p>
         <p className={`mt-3 text-3xl font-semibold ${netClass}`}>{netFormatted}</p>
-        <p className="mt-4 text-[11px] text-pixel-gold sm:text-xs">
-          Income: <span className="font-medium text-pixel-amber">{formatAmount(incomeTotal)}</span>
+        <p className="mt-4 text-xs text-brand-highlight">
+          Income: <span className="font-medium text-brand-neutral">{formatAmount(incomeTotal)}</span>
         </p>
-        <p className="mt-1 text-[11px] text-pixel-gold sm:text-xs">
-          Expenses: <span className="font-medium text-pixel-red">{expenseFormatted}</span>
+        <p className="mt-1 text-xs text-brand-highlight">
+          Expenses: <span className="font-medium text-brand-accent">{expenseFormatted}</span>
         </p>
-        <p className="mt-4 text-[10px] font-semibold uppercase tracking-wide text-pixel-cyan">
+        <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-brand-neutral/70">
           Currency: {currencyLabel}
         </p>
       </div>
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Top category</p>
-        <p className="mt-3 text-2xl font-semibold text-pixel-gold">{topCategoryMeta.label}</p>
-        <p className="mt-3 text-sm text-pixel-gold">
-          {formatAmount(topCategoryValue)} {CATEGORY_META[topCategoryKey].type === "income" ? "received" : "spent"}.
+      <div className="border border-brand-line bg-brand-ocean/70 px-4 py-5 sm:px-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-neutral">Top category</p>
+        <p className="mt-3 text-2xl font-semibold text-brand-highlight">{topCategoryMeta.label}</p>
+        <p className="mt-3 text-xs text-brand-highlight">
+          {formatAmount(topCategoryValue)}{' '}
+          {CATEGORY_META[topCategoryKey].type === 'income' ? 'received' : 'spent'}.
         </p>
       </div>
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Latest activity</p>
+      <div className="border border-brand-line bg-brand-ocean/70 px-4 py-5 sm:px-5">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-brand-neutral">Latest activity</p>
         {lastExpense != null ? (
           <>
-            <p className="mt-3 text-3xl font-semibold text-pixel-gold">{formatAmount(lastExpense.amount)}</p>
-            <p className="mt-3 text-sm text-pixel-gold">
-              {CATEGORY_META[lastExpense.category].label} on {format(new Date(lastExpense.date), "MMM d, yyyy")}
+            <p className="mt-3 text-3xl font-semibold text-brand-highlight">
+              {formatAmount(lastExpense.amount)}
+            </p>
+            <p className="mt-3 text-xs text-brand-highlight">
+              {CATEGORY_META[lastExpense.category].label} on{' '}
+              {format(new Date(lastExpense.date), 'MMM d, yyyy')}
             </p>
           </>
         ) : (
-          <p className="mt-3 text-lg font-semibold text-pixel-gold">Add your first entry</p>
+          <p className="mt-3 text-sm font-semibold text-brand-highlight">Add your first entry</p>
         )}
       </div>
     </div>

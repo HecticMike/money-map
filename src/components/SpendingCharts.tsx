@@ -126,8 +126,8 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-pixel-amber sm:text-sm">
+      <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 sm:px-5">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
           Income vs outgoings
         </h3>
         {categoryChartData.labels.length > 0 ? (
@@ -135,13 +135,13 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
             <Doughnut data={categoryChartData} options={categoryChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-[11px] text-pixel-gold">
+          <p className="mt-4 text-[11px] text-brand-highlight">
             Categorise expenses to see where your money flows.
           </p>
         )}
       </div>
-      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
-        <h3 className="text-xs font-semibold uppercase tracking-widest text-pixel-amber sm:text-sm">
+      <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 sm:px-5">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
           Monthly trend
         </h3>
         {trendChartData.labels.length > 1 ? (
@@ -149,7 +149,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
             <Line data={trendChartData} options={trendChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-[11px] text-pixel-gold">
+          <p className="mt-4 text-[11px] text-brand-highlight">
             Add entries across different months to see your trend.
           </p>
         )}

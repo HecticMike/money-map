@@ -1,20 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  font-family: 'Press Start 2P', monospace;
-  background-color: #090a1a;
-  color: #fde047;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background-color: #090b1d;
+  color: #facc15;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background: radial-gradient(circle at top, #1e214d 0%, #090a1a 60%, #05060f 100%);
+  background: radial-gradient(circle at top, #1f2647 0%, #0b1024 65%, #050712 100%);
 }
 
 #root {

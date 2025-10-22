@@ -5,22 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        pixel: {
-          midnight: '#090a1a',
-          abyss: '#131437',
-          dusk: '#1e214d',
-          border: '#353862',
-          gold: '#facc15',
-          amber: '#fde047',
-          red: '#f87171',
-          cyan: '#38bdf8',
-          parchment: '#fff4ce'
+        brand: {
+          midnight: '#090b1d',
+          ocean: '#11193b',
+          slate: '#1e264c',
+          line: '#2f355a',
+          highlight: '#facc15',
+          accent: '#f87171',
+          neutral: '#fef3c7'
         },
         category: {
           living_home: {
-            rent: '#6366f1',
+            rent: '#4c6ef5',
             utilities: '#facc15',
-            groceries: '#f97316',
+            groceries: '#fb923c',
             home_garden: '#84cc16'
           },
           mobility_transport: {
@@ -42,7 +40,7 @@ const config: Config = {
           },
           leisure_lifestyle: {
             clothing: '#f472b6',
-            eating_out: '#fb923c',
+            eating_out: '#fb7185',
             entertainment: '#ec4899',
             travel_holidays: '#8b5cf6',
             subscriptions: '#94a3b8'
@@ -50,10 +48,10 @@ const config: Config = {
         }
       },
       boxShadow: {
-        card: '0 12px 30px rgba(3, 6, 18, 0.55)'
+        panel: '0 18px 40px rgba(8, 12, 32, 0.55)'
       },
       fontFamily: {
-        pixel: ['"Press Start 2P"', 'monospace']
+        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif']
       }
     }
   },

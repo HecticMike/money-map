@@ -1,49 +1,53 @@
-﻿import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { formatISO } from "date-fns";
-import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft } from "../types";
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { formatISO } from 'date-fns';
+import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft } from '../types';
 
 interface ExpenseFormValues {
   amount: number | string;
-  category: ExpenseDraft["category"];
+  category: ExpenseDraft['category'];
   date: string;
   note: string;
 }
 
 interface ExpenseFormProps {
-  mode?: "create" | "edit";
+  mode?: 'create' | 'edit';
   initialExpense?: Expense | null;
   onSubmit: (draft: ExpenseDraft) => void;
   onCancel?: () => void;
   currencySymbol: string;
 }
 
-const DEFAULT_CATEGORY: ExpenseDraft["category"] = "living_home_groceries";
-const expenseOptions = (Object.entries(CATEGORY_META) as Array<[ExpenseDraft["category"], (typeof CATEGORY_META)[ExpenseDraft["category"]]]>).filter(
-  ([, meta]) => meta.type === "expense"
-);
-const incomeOptions = INCOME_CATEGORIES.map((key) => [key, CATEGORY_META[key].label.replace('Income · ', '')] as const);
+const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'living_home_groceries';
+
+const expenseOptions = (
+  Object.entries(CATEGORY_META) as Array<
+    [ExpenseDraft['category'], (typeof CATEGORY_META)[ExpenseDraft['category']]]
+  >
+).filter(([, meta]) => meta.type === 'expense');
+
+const incomeOptions = INCOME_CATEGORIES.map((key) => [key, CATEGORY_META[key].label] as const);
 
 const toFormValues = (expense?: Expense | null): ExpenseFormValues => {
   if (expense == null) {
     return {
-      amount: "",
+      amount: '',
       category: DEFAULT_CATEGORY,
-      date: formatISO(new Date(), { representation: "date" }),
-      note: ""
+      date: formatISO(new Date(), { representation: 'date' }),
+      note: ''
     };
   }
 
   return {
     amount: expense.amount,
     category: expense.category,
-    date: formatISO(new Date(expense.date), { representation: "date" }),
+    date: formatISO(new Date(expense.date), { representation: 'date' }),
     note: expense.note
   };
 };
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = ({
-  mode = "create",
+  mode = 'create',
   initialExpense = null,
   onSubmit,
   onCancel,
@@ -55,7 +59,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     formState: { errors, isSubmitting },
     reset
   } = useForm<ExpenseFormValues>({
-    mode: "onBlur",
+    mode: 'onBlur',
     defaultValues: toFormValues(initialExpense)
   });
 
@@ -71,7 +75,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       date: dateISO,
       note: values.note.trim()
     });
-    if (mode === "create") {
+    if (mode === 'create') {
       reset(toFormValues());
     }
   };
@@ -79,42 +83,42 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit(submitHandler)}
-      className="space-y-6"
-      aria-label={mode === "edit" ? "Edit entry form" : "Add entry form"}
+      className="space-y-5 text-brand-highlight"
+      aria-label={mode === 'edit' ? 'Edit entry form' : 'Add entry form'}
     >
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <label className="flex flex-col gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
             Amount *
           </span>
           <input
             type="number"
             step="0.01"
             inputMode="decimal"
-            {...register("amount", {
-              required: "Enter an amount",
+            {...register('amount', {
+              required: 'Enter an amount',
               valueAsNumber: true,
-              min: { value: 0.01, message: "Amount must be above zero" }
+              min: { value: 0.01, message: 'Amount must be above zero' }
             })}
-            className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold placeholder:text-pixel-cyan/60 shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
+            className="w-full border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight placeholder:text-brand-neutral/60 focus:border-brand-highlight focus:outline-none focus:ring-0"
             placeholder={`${currencySymbol}45.20`}
           />
           {errors.amount != null ? (
-            <span className="text-[11px] text-pixel-red">{errors.amount.message}</span>
+            <span className="text-[11px] text-brand-accent">{errors.amount.message}</span>
           ) : null}
         </label>
         <label className="flex flex-col gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
             Category *
           </span>
           <select
-            {...register("category", { required: true })}
-            className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
+            {...register('category', { required: true })}
+            className="w-full border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
           >
             <optgroup label="Income">
-              {incomeOptions.map(([key, originalLabel]) => (
+              {incomeOptions.map(([key, label]) => (
                 <option key={key} value={key}>
-                  {originalLabel}
+                  {label}
                 </option>
               ))}
             </optgroup>
@@ -129,43 +133,45 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         </label>
       </div>
       <label className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
           Date *
         </span>
         <input
           type="date"
-          {...register("date", { required: true })}
-          className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
+          {...register('date', { required: true })}
+          className="w-full border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
         />
-        {errors.date != null ? <span className="text-[11px] text-pixel-red">Select a date</span> : null}
+        {errors.date != null ? (
+          <span className="text-[11px] text-brand-accent">Select a date</span>
+        ) : null}
       </label>
       <label className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
           Note
         </span>
         <textarea
           rows={3}
-          {...register("note", { maxLength: 240 })}
-          className="w-full resize-none rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
+          {...register('note', { maxLength: 240 })}
+          className="w-full resize-none border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
           placeholder="Why did you spend this?"
         />
         {errors.note != null ? (
-          <span className="text-[11px] text-pixel-red">Keep the note under 240 characters</span>
+          <span className="text-[11px] text-brand-accent">Keep the note under 240 characters</span>
         ) : null}
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-amber px-5 py-3 text-[11px] font-semibold text-pixel-midnight shadow-lg shadow-pixel-amber/30 transition hover:bg-pixel-gold disabled:cursor-not-allowed disabled:border-pixel-border disabled:bg-pixel-dusk disabled:text-pixel-gold/40"
+          className="inline-flex items-center justify-center border border-brand-line bg-brand-highlight px-4 py-2 text-[11px] font-semibold text-brand-midnight transition hover:bg-brand-amber disabled:cursor-not-allowed disabled:bg-brand-slate/60"
         >
-          {mode === "edit" ? "Update entry" : "Add entry"}
+          {mode === 'edit' ? 'Update entry' : 'Add entry'}
         </button>
-        {mode === "edit" && onCancel != null ? (
+        {mode === 'edit' && onCancel != null ? (
           <button
             type="button"
             onClick={onCancel}
-            className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border px-5 py-3 text-[11px] font-semibold text-pixel-gold transition hover:border-pixel-amber hover:text-pixel-amber"
+            className="inline-flex items-center justify-center border border-brand-line px-4 py-2 text-[11px] font-semibold text-brand-highlight transition hover:text-brand-amber"
           >
             Cancel
           </button>
@@ -174,7 +180,3 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     </form>
   );
 };
-
-
-
-
