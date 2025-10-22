@@ -11,6 +11,8 @@ interface ExpenseCardProps {
 export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDelete, formatAmount }) => {
   const categoryMeta = CATEGORY_META[expense.category];
   const formattedDate = format(new Date(expense.date), "MMM d, yyyy");
+  const isIncome = categoryMeta.type === "income";
+  const amountDisplay = `${isIncome ? "+" : "-"}${formatAmount(expense.amount)}`;
 
   return (
     <article
@@ -19,7 +21,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDel
     >
       <div className="flex flex-1 flex-col gap-1">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-lg font-semibold text-white">{formatAmount(expense.amount)}</span>
+          <span className="text-lg font-semibold text-white">{amountDisplay}</span>
           <span
             className="inline-flex items-center rounded-lg bg-slate-900/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide"
             style={{ color: categoryMeta.color }}
@@ -55,3 +57,4 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDel
     </article>
   );
 };
+

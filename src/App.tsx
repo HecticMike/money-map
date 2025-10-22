@@ -12,7 +12,7 @@ import { downloadExpensesFromDrive, uploadExpensesToDrive } from "./utils/google
 import { useCurrency, CURRENCY_SELECT_OPTIONS, type SupportedCurrency } from "./hooks/useCurrency";
 
 export const App: React.FC = () => {
-  const { expenses, stats, addExpense, updateExpense, deleteExpense, replaceExpenses } = useExpenses();
+  const { expenses, stats, incomeTotal, expenseTotal, addExpense, updateExpense, deleteExpense, replaceExpenses } = useExpenses();
   const drive = useDriveContext();
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -212,7 +212,7 @@ export const App: React.FC = () => {
           <section id="insights" className="flex flex-col gap-6">
             <h2 className="text-lg font-semibold tracking-wide text-slate-200 uppercase">Insights</h2>
             <div className="grid gap-6 lg:grid-cols-2">
-              <SummaryGrid stats={stats} expenses={expenses} formatAmount={format} currencyLabel={currencyLabel} />
+              <SummaryGrid stats={stats} expenses={expenses} formatAmount={format} currencyLabel={currencyLabel} incomeTotal={incomeTotal} expenseTotal={expenseTotal} />
               <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-white/5">
                 <SpendingCharts stats={stats} formatAmount={format} />
               </div>
@@ -271,3 +271,8 @@ export const App: React.FC = () => {
 };
 
 export default App;
+
+
+
+
+

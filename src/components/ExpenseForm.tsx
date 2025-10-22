@@ -1,7 +1,7 @@
 ﻿import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { formatISO } from "date-fns";
-import { CATEGORY_META, type Expense, type ExpenseDraft } from "../types";
+import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft } from "../types";
 
 interface ExpenseFormValues {
   amount: number | string;
@@ -19,6 +19,10 @@ interface ExpenseFormProps {
 }
 
 const DEFAULT_CATEGORY: ExpenseDraft["category"] = "living_home_groceries";
+const expenseOptions = (Object.entries(CATEGORY_META) as Array<[ExpenseDraft["category"], (typeof CATEGORY_META)[ExpenseDraft["category"]]]>).filter(
+  ([, meta]) => meta.type === "expense"
+);
+const incomeOptions = INCOME_CATEGORIES.map((key) => [key, CATEGORY_META[key]] as const);
 
 const toFormValues = (expense?: Expense | null): ExpenseFormValues => {
   if (expense == null) {
@@ -107,11 +111,20 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
             {...register("category", { required: true })}
             className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-base text-slate-200 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
           >
-            {Object.entries(CATEGORY_META).map(([key, meta]) => (
-              <option key={key} value={key}>
-                {meta.label}
-              </option>
-            ))}
+            <optgroup label="Income">
+              {incomeOptions.map(([key, meta]) => (
+                <option key={key} value={key}>
+                  {meta.label}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Expenses">
+              {expenseOptions.map(([key, meta]) => (
+                <option key={key} value={key}>
+                  {meta.label}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </label>
       </div>

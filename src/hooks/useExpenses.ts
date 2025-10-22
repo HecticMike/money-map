@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { formatISO, parseISO, startOfMonth } from 'date-fns';
-import { CATEGORY_META, type Expense, type ExpenseDraft, type ExpenseStats } from '../types';
-import { readExpensesFromStorage, writeExpensesToStorage } from '../utils/storage';
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
+import { formatISO, parseISO, startOfMonth } from "date-fns";
+import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft, type ExpenseStats } from "../types";
+import { readExpensesFromStorage, writeExpensesToStorage } from "../utils/storage";
 
 const createExpense = (draft: ExpenseDraft): Expense => {
   const timestamp = draft.date ?? new Date().toISOString();
-  const base = typeof timestamp === 'string' ? timestamp : new Date(timestamp).toISOString();
+  const base = typeof timestamp === "string" ? timestamp : new Date(timestamp).toISOString();
   return {
-    id: typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? crypto.randomUUID()
-      : Math.random().toString(36).slice(2),
+    id:
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2),
     amount: Number(draft.amount),
     category: draft.category,
     date: base,
@@ -57,7 +58,8 @@ export const useExpenses = () => {
               amount: updates.amount != null ? Number(updates.amount) : expense.amount,
               updatedAt: new Date().toISOString()
             }
-          : expense);
+          : expense
+      );
       return next.sort((a, b) => (a.date < b.date ? 1 : -1));
     });
   }, []);
@@ -96,14 +98,32 @@ export const useExpenses = () => {
 
     return {
       total,
-      byCategory: byCategory as ExpenseStats['byCategory'],
+      byCategory: byCategory as ExpenseStats["byCategory"],
       monthlyTotals
     };
   }, [expenses]);
 
+  const incomeTotal = useMemo(
+    () =>
+      expenses.reduce((sum, entry) => {
+        return INCOME_CATEGORIES.includes(entry.category) ? sum + entry.amount : sum;
+      }, 0),
+    [expenses]
+  );
+
+  const expenseTotal = useMemo(
+    () =>
+      expenses.reduce((sum, entry) => {
+        return INCOME_CATEGORIES.includes(entry.category) ? sum : sum + entry.amount;
+      }, 0),
+    [expenses]
+  );
+
   return {
     expenses,
     stats,
+    incomeTotal,
+    expenseTotal,
     addExpense,
     updateExpense,
     deleteExpense,

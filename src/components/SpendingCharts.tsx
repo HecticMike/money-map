@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 import {
   ArcElement,
   CategoryScale,
@@ -40,7 +40,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
       labels,
       datasets: [
         {
-          label: 'Spending by category',
+          label: 'Income vs outgoings',
           data,
           backgroundColor: colors,
           borderWidth: 2,
@@ -126,26 +126,26 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl bg-white p-6 shadow-card">
-        <h3 className="text-lg font-semibold text-slate-800">Spending by category</h3>
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-white/5">
+        <h3 className="text-lg font-semibold text-slate-200">Income vs outgoings</h3>
         {categoryChartData.labels.length > 0 ? (
           <div className="mt-6">
             <Doughnut data={categoryChartData} options={categoryChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-sm text-slate-500">
+          <p className="mt-4 text-sm text-slate-300">
             Categorise expenses to see where your money flows.
           </p>
         )}
       </div>
-      <div className="rounded-2xl bg-white p-6 shadow-card">
-        <h3 className="text-lg font-semibold text-slate-800">Monthly trend</h3>
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-white/5">
+        <h3 className="text-lg font-semibold text-slate-200">Monthly trend</h3>
         {trendChartData.labels.length > 1 ? (
           <div className="mt-6 h-72">
             <Line data={trendChartData} options={trendChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-sm text-slate-500">
+          <p className="mt-4 text-sm text-slate-300">
             Add entries across different months to see your trend.
           </p>
         )}
@@ -153,5 +153,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
     </div>
   );
 };
+
+
 
 
