@@ -84,7 +84,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
     >
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <label className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-200">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
             Amount *
           </span>
           <input
@@ -96,25 +96,25 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
               valueAsNumber: true,
               min: { value: 0.01, message: "Amount must be above zero" }
             })}
-            className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-base text-slate-200 placeholder:text-slate-500 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+            className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold placeholder:text-pixel-cyan/60 shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
             placeholder={`${currencySymbol}45.20`}
           />
           {errors.amount != null ? (
-            <span className="text-sm text-rose-400">{errors.amount.message}</span>
+            <span className="text-[11px] text-pixel-red">{errors.amount.message}</span>
           ) : null}
         </label>
         <label className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-200">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
             Category *
           </span>
           <select
             {...register("category", { required: true })}
-            className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-base text-slate-200 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+            className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
           >
             <optgroup label="Income">
-              {incomeOptions.map(([key, label]) => (
+              {incomeOptions.map(([key, originalLabel]) => (
                 <option key={key} value={key}>
-                  {label}
+                  {originalLabel}
                 </option>
               ))}
             </optgroup>
@@ -129,35 +129,35 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
         </label>
       </div>
       <label className="flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-200">
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
           Date *
         </span>
         <input
           type="date"
           {...register("date", { required: true })}
-          className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-base text-slate-200 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+          className="w-full rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
         />
-        {errors.date != null ? <span className="text-sm text-rose-400">Select a date</span> : null}
+        {errors.date != null ? <span className="text-[11px] text-pixel-red">Select a date</span> : null}
       </label>
       <label className="flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-200">
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-pixel-amber">
           Note
         </span>
         <textarea
           rows={3}
           {...register("note", { maxLength: 240 })}
-          className="w-full resize-none rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-base text-slate-200 shadow-sm focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+          className="w-full resize-none rounded-lg border-2 border-pixel-border bg-pixel-dusk/60 px-4 py-3 text-sm text-pixel-gold shadow-sm focus:border-pixel-amber focus:outline-none focus:ring-2 focus:ring-pixel-amber/30"
           placeholder="Why did you spend this?"
         />
         {errors.note != null ? (
-          <span className="text-sm text-rose-400">Keep the note under 240 characters</span>
+          <span className="text-[11px] text-pixel-red">Keep the note under 240 characters</span>
         ) : null}
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center justify-center rounded-xl bg-sky-400 px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-sky-400/20 transition hover:bg-sky-300 disabled:cursor-not-allowed disabled:bg-slate-500 disabled:text-slate-300"
+          className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border bg-pixel-amber px-5 py-3 text-[11px] font-semibold text-pixel-midnight shadow-lg shadow-pixel-amber/30 transition hover:bg-pixel-gold disabled:cursor-not-allowed disabled:border-pixel-border disabled:bg-pixel-dusk disabled:text-pixel-gold/40"
         >
           {mode === "edit" ? "Update entry" : "Add entry"}
         </button>
@@ -165,7 +165,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="inline-flex items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-slate-200 transition hover:border-white/40 hover:text-white"
+            className="inline-flex items-center justify-center rounded-lg border-2 border-pixel-border px-5 py-3 text-[11px] font-semibold text-pixel-gold transition hover:border-pixel-amber hover:text-pixel-amber"
           >
             Cancel
           </button>

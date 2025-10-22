@@ -33,37 +33,37 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
 
   return (
     <div className="grid gap-3 md:grid-cols-3">
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Net flow</p>
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Net flow</p>
         <p className={`mt-3 text-3xl font-semibold ${netClass}`}>{netFormatted}</p>
-        <p className="mt-4 text-xs text-slate-200 sm:text-sm">
-          Income: <span className="font-medium text-white/90">{formatAmount(incomeTotal)}</span>
+        <p className="mt-4 text-[11px] text-pixel-gold sm:text-xs">
+          Income: <span className="font-medium text-pixel-amber">{formatAmount(incomeTotal)}</span>
         </p>
-        <p className="mt-1 text-xs text-slate-200 sm:text-sm">
-          Expenses: <span className="font-medium text-rose-200">{expenseFormatted}</span>
+        <p className="mt-1 text-[11px] text-pixel-gold sm:text-xs">
+          Expenses: <span className="font-medium text-pixel-red">{expenseFormatted}</span>
         </p>
-        <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <p className="mt-4 text-[10px] font-semibold uppercase tracking-wide text-pixel-cyan">
           Currency: {currencyLabel}
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Top category</p>
-        <p className="mt-3 text-2xl font-semibold text-white">{topCategoryMeta.label}</p>
-        <p className="mt-3 text-sm text-slate-200">
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Top category</p>
+        <p className="mt-3 text-2xl font-semibold text-pixel-gold">{topCategoryMeta.label}</p>
+        <p className="mt-3 text-sm text-pixel-gold">
           {formatAmount(topCategoryValue)} {CATEGORY_META[topCategoryKey].type === "income" ? "received" : "spent"}.
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
-        <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Latest activity</p>
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-widest text-pixel-amber">Latest activity</p>
         {lastExpense != null ? (
           <>
-            <p className="mt-3 text-3xl font-semibold text-white">{formatAmount(lastExpense.amount)}</p>
-            <p className="mt-3 text-sm text-slate-200">
+            <p className="mt-3 text-3xl font-semibold text-pixel-gold">{formatAmount(lastExpense.amount)}</p>
+            <p className="mt-3 text-sm text-pixel-gold">
               {CATEGORY_META[lastExpense.category].label} on {format(new Date(lastExpense.date), "MMM d, yyyy")}
             </p>
           </>
         ) : (
-          <p className="mt-3 text-lg font-semibold text-slate-200">Add your first entry</p>
+          <p className="mt-3 text-lg font-semibold text-pixel-gold">Add your first entry</p>
         )}
       </div>
     </div>

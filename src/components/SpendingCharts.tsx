@@ -125,27 +125,31 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
   );
 
   return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-white/5 sm:p-6">
-        <h3 className="text-lg font-semibold text-slate-200">Income vs outgoings</h3>
+    <div className="grid gap-4 lg:grid-cols-2">
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-pixel-amber sm:text-sm">
+          Income vs outgoings
+        </h3>
         {categoryChartData.labels.length > 0 ? (
           <div className="mt-6">
             <Doughnut data={categoryChartData} options={categoryChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-sm text-slate-300">
+          <p className="mt-4 text-[11px] text-pixel-gold">
             Categorise expenses to see where your money flows.
           </p>
         )}
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-white/5 sm:p-6">
-        <h3 className="text-lg font-semibold text-slate-200">Monthly trend</h3>
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/80 p-4 shadow-inner shadow-black/30 sm:p-6">
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-pixel-amber sm:text-sm">
+          Monthly trend
+        </h3>
         {trendChartData.labels.length > 1 ? (
           <div className="mt-6 h-72">
             <Line data={trendChartData} options={trendChartOptions} />
           </div>
         ) : (
-          <p className="mt-4 text-sm text-slate-300">
+          <p className="mt-4 text-[11px] text-pixel-gold">
             Add entries across different months to see your trend.
           </p>
         )}

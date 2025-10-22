@@ -11,7 +11,7 @@ interface ExpenseListProps {
 export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDelete, formatAmount }) => {
   if (expenses.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-950/50 px-6 py-12 text-center text-sm text-slate-200">
+      <div className="rounded-2xl border-4 border-pixel-border bg-pixel-abyss/70 px-6 py-10 text-center text-[11px] text-pixel-gold">
         No entries yet. Add your first entry to build your Money Map.
       </div>
     );
@@ -20,7 +20,13 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDe
   return (
     <div className="flex flex-col gap-2">
       {expenses.map((expense) => (
-        <ExpenseCard key={expense.id} expense={expense} onEdit={onEdit} onDelete={onDelete} formatAmount={formatAmount} />
+        <ExpenseCard
+          key={expense.id}
+          expense={expense}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          formatAmount={formatAmount}
+        />
       ))}
     </div>
   );
