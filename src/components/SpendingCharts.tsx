@@ -126,7 +126,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-white/5">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-white/5 sm:p-6">
         <h3 className="text-lg font-semibold text-slate-200">Income vs outgoings</h3>
         {categoryChartData.labels.length > 0 ? (
           <div className="mt-6">
@@ -138,7 +138,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
           </p>
         )}
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-white/5">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-white/5 sm:p-6">
         <h3 className="text-lg font-semibold text-slate-200">Monthly trend</h3>
         {trendChartData.labels.length > 1 ? (
           <div className="mt-6 h-72">
@@ -153,6 +153,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
     </div>
   );
 };
+
 
 
 

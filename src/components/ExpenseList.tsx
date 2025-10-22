@@ -18,7 +18,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDe
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       {expenses.map((expense) => (
         <ExpenseCard key={expense.id} expense={expense} onEdit={onEdit} onDelete={onDelete} formatAmount={formatAmount} />
       ))}

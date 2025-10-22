@@ -20,8 +20,8 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
 }) => {
   const netFlow = incomeTotal - expenseTotal;
   const netClass = netFlow >= 0 ? "text-emerald-300" : "text-rose-300";
-  const netPrefix = netFlow >= 0 ? "+" : "-";
-  const netAmount = Math.abs(netFlow);
+  const netFormatted = formatAmount(netFlow);
+  const expenseFormatted = formatAmount(-expenseTotal);
 
   const [topCategoryKey, topCategoryValue] =
     (Object.entries(stats.byCategory)
@@ -32,28 +32,28 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
   const lastExpense = expenses[0];
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
+    <div className="grid gap-3 md:grid-cols-3">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Net flow</p>
-        <p className={`mt-3 text-3xl font-semibold ${netClass}`}>{`${netPrefix}${formatAmount(netAmount)}`}</p>
-        <p className="mt-4 text-sm text-slate-200">
+        <p className={`mt-3 text-3xl font-semibold ${netClass}`}>{netFormatted}</p>
+        <p className="mt-4 text-xs text-slate-200 sm:text-sm">
           Income: <span className="font-medium text-white/90">{formatAmount(incomeTotal)}</span>
         </p>
-        <p className="mt-1 text-sm text-slate-200">
-          Expenses: <span className="font-medium text-rose-200">-{formatAmount(expenseTotal)}</span>
+        <p className="mt-1 text-xs text-slate-200 sm:text-sm">
+          Expenses: <span className="font-medium text-rose-200">{expenseFormatted}</span>
         </p>
         <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">
           Currency: {currencyLabel}
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Top category</p>
         <p className="mt-3 text-2xl font-semibold text-white">{topCategoryMeta.label}</p>
         <p className="mt-3 text-sm text-slate-200">
           {formatAmount(topCategoryValue)} {CATEGORY_META[topCategoryKey].type === "income" ? "received" : "spent"}.
         </p>
       </div>
-      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 shadow-inner shadow-black/20">
+      <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 shadow-inner shadow-black/20 sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-300">Latest activity</p>
         {lastExpense != null ? (
           <>
@@ -69,6 +69,7 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
     </div>
   );
 };
+
 
 
 

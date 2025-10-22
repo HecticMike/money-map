@@ -28,6 +28,14 @@ const normaliseExpense = (expense: Expense): Expense => ({
   updatedAt: expense.updatedAt ?? formatISO(new Date())
 });
 
+const getComparableTimestamp = (entry: Expense): number => {
+  const updated = entry.updatedAt ? new Date(entry.updatedAt).getTime() : 0;
+  const created = new Date(entry.date).getTime();
+  return Math.max(updated, created);
+};
+
+const sortByMostRecent = (a: Expense, b: Expense): number => getComparableTimestamp(b) - getComparableTimestamp(a);
+
 export const useExpenses = () => {
   const [expenses, setExpenses] = useState<Expense[]>(() => readExpensesFromStorage().map(normaliseExpense));
   const [isHydrated, setIsHydrated] = useState(false);
@@ -44,7 +52,7 @@ export const useExpenses = () => {
   const addExpense = useCallback((draft: ExpenseDraft) => {
     setExpenses((previous) => {
       const next = [createExpense(draft), ...previous];
-      return next.sort((a, b) => (a.date < b.date ? 1 : -1));
+      return next.sort(sortByMostRecent);
     });
   }, []);
 
@@ -58,9 +66,8 @@ export const useExpenses = () => {
               amount: updates.amount != null ? Number(updates.amount) : expense.amount,
               updatedAt: new Date().toISOString()
             }
-          : expense
-      );
-      return next.sort((a, b) => (a.date < b.date ? 1 : -1));
+          : expense);
+      return next.sort(sortByMostRecent);
     });
   }, []);
 
@@ -69,7 +76,7 @@ export const useExpenses = () => {
   }, []);
 
   const replaceExpenses = useCallback((incoming: Expense[]) => {
-    setExpenses(incoming.map(normaliseExpense).sort((a, b) => (a.date < b.date ? 1 : -1)));
+    setExpenses(incoming.map(normaliseExpense).sort(sortByMostRecent));
   }, []);
 
   const stats: ExpenseStats = useMemo(() => {
