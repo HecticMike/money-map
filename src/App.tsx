@@ -11,6 +11,13 @@ import { useDriveContext, DRIVE_FILE_TITLE } from './contexts/DriveContext';
 import { downloadExpensesFromDrive, uploadExpensesToDrive, ensureDriveFile } from './utils/googleDrive';
 import { useCurrency, CURRENCY_SELECT_OPTIONS, type SupportedCurrency } from './hooks/useCurrency';
 
+const navItems = [
+  { id: 'capture', label: 'Capture' },
+  { id: 'insights', label: 'Insights' },
+  { id: 'activity', label: 'Activity' },
+  { id: 'drive', label: 'Backup' }
+];
+
 export const App: React.FC = () => {
   const {
     expenses,
@@ -141,103 +148,94 @@ export const App: React.FC = () => {
     drive.setError(null);
   };
 
-  const navItems = [
-    { id: 'capture', label: 'Capture' },
-    { id: 'insights', label: 'Insights' },
-    { id: 'activity', label: 'Activity' },
-    { id: 'drive', label: 'Backup' }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-midnight via-brand-ocean to-brand-midnight text-brand-highlight font-sans">
       <PwaUpdater />
-      <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-4 py-8 md:px-8">
-        <div className="flex flex-1 flex-col gap-8 border border-brand-line bg-brand-midnight/80 p-6 shadow-panel md:p-8">
-          <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="flex items-end gap-4">
-              <div className="grid h-16 w-16 place-items-center border border-brand-highlight bg-brand-highlight text-3xl font-semibold text-brand-midnight md:h-20 md:w-20 md:text-4xl">
-                M
-              </div>
-              <h1 className="text-3xl font-semibold text-brand-highlight md:text-4xl">Money Map</h1>
+      <main className="mx-auto max-w-5xl px-3 py-8 space-y-6 text-brand-highlight md:px-6">
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="grid h-14 w-14 place-items-center border border-brand-highlight bg-brand-highlight text-2xl font-semibold text-brand-midnight md:h-16 md:w-16 md:text-3xl">
+              M
             </div>
-            <div className="flex items-center gap-4 border border-brand-line bg-brand-ocean/60 px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-brand-highlight md:text-xs">
-              <span className="text-brand-neutral">Currency</span>
-              <div className="flex gap-2">
-                {CURRENCY_SELECT_OPTIONS.map((option) => (
-                  <button
-                    key={option.code}
-                    type="button"
-                    onClick={() => handleCurrencyToggle(option.code)}
-                    className={`px-3 py-1 text-[11px] transition ${
-                      currency === option.code
-                        ? 'bg-brand-highlight text-brand-midnight'
-                        : 'border border-brand-line text-brand-highlight hover:text-brand-amber'
-                    }`}
-                    aria-pressed={currency === option.code}
-                  >
-                    {option.code}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </header>
-
-          <nav className="flex items-center justify-center overflow-x-auto border border-brand-line bg-brand-ocean/80 px-2 py-1.5 text-[10px] uppercase tracking-[0.22em] text-brand-highlight md:text-xs">
-            <div className="flex w-full flex-nowrap items-center justify-center gap-2 px-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  className="border border-transparent px-3 py-1.5 text-brand-highlight transition hover:border-brand-highlight hover:text-brand-amber whitespace-nowrap"
+            <h1 className="text-3xl font-semibold text-brand-highlight md:text-4xl">Money Map</h1>
+          </div>
+          <div className="flex items-center gap-3 border border-brand-line bg-brand-ocean/60 px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-brand-highlight md:text-xs">
+            <span className="text-brand-neutral">Currency</span>
+            <div className="flex gap-2">
+              {CURRENCY_SELECT_OPTIONS.map((option) => (
+                <button
+                  key={option.code}
+                  type="button"
+                  onClick={() => handleCurrencyToggle(option.code)}
+                  className={`px-3 py-1 transition ${
+                    currency === option.code
+                      ? 'bg-brand-highlight text-brand-midnight'
+                      : 'border border-brand-line text-brand-highlight hover:text-brand-amber'
+                  }`}
+                  aria-pressed={currency === option.code}
                 >
-                  {item.label}
-                </a>
+                  {option.code}
+                </button>
               ))}
             </div>
-          </nav>
+          </div>
+        </header>
 
-          <section
-            id="capture"
-            className="border border-brand-line bg-brand-ocean/75 px-5 py-6 shadow-panel sm:px-6"
-          >
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-              <div className="flex-1 space-y-3 text-brand-highlight">
-                <h2 className="text-lg font-semibold uppercase tracking-[0.3em] text-brand-amber md:text-xl">
-                  {isEditing ? 'Edit entry' : 'Add money entry'}
-                </h2>
-                <p className="max-w-sm text-xs text-brand-neutral">
-                  Log income and outgoings quickly to keep your map up to date.
-                </p>
-              </div>
-              <div className="w-full max-w-lg border border-brand-line bg-brand-midnight/90 px-5 py-6">
-                <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.25em] text-brand-neutral">
-                  <span>{isEditing ? 'Edit entry' : 'Add an entry'}</span>
-                  {isEditing ? (
-                    <button
-                      type="button"
-                      onClick={() => setEditingExpense(null)}
-                      className="text-brand-accent hover:text-brand-highlight"
-                    >
-                      Cancel
-                    </button>
-                  ) : null}
-                </div>
-                <ExpenseForm
-                  mode={isEditing ? 'edit' : 'create'}
-                  initialExpense={editingExpense}
-                  onSubmit={isEditing ? handleUpdateExpense : handleCreateExpense}
-                  onCancel={() => setEditingExpense(null)}
-                  currencySymbol={currencyMeta.symbol}
-                />
-              </div>
+        <nav className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.22em] text-brand-highlight md:text-xs">
+          {navItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="border border-brand-line/0 px-3 py-1.5 transition hover:border-brand-highlight hover:text-brand-amber"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <section
+          id="capture"
+          className="border border-brand-line bg-brand-ocean/75 px-4 py-5 shadow-panel sm:px-5"
+        >
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+            <div className="space-y-3 text-brand-highlight">
+              <h2 className="text-lg font-semibold uppercase tracking-[0.3em] text-brand-amber md:text-xl">
+                {isEditing ? 'Edit entry' : 'Add money entry'}
+              </h2>
+              <p className="max-w-sm text-xs text-brand-neutral">
+                Log income and outgoings quickly to keep your map up to date.
+              </p>
             </div>
-          </section>
+            <div className="border border-brand-line bg-brand-midnight/90 px-4 py-5">
+              <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.25em] text-brand-neutral">
+                <span>{isEditing ? 'Edit entry' : 'Add an entry'}</span>
+                {isEditing ? (
+                  <button
+                    type="button"
+                    onClick={() => setEditingExpense(null)}
+                    className="text-brand-accent hover:text-brand-highlight"
+                  >
+                    Cancel
+                  </button>
+                ) : null}
+              </div>
+              <ExpenseForm
+                mode={isEditing ? 'edit' : 'create'}
+                initialExpense={editingExpense}
+                onSubmit={isEditing ? handleUpdateExpense : handleCreateExpense}
+                onCancel={() => setEditingExpense(null)}
+                currencySymbol={currencyMeta.symbol}
+              />
+            </div>
+          </div>
+        </section>
 
-          <section id="insights" className="flex flex-col gap-4 text-brand-highlight">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
-              Insights
-            </h2>
-            <div className="grid gap-4 lg:grid-cols-2">
+        <section id="insights" className="space-y-4 text-brand-highlight">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
+            Insights
+          </h2>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
               <SummaryGrid
                 stats={stats}
                 expenses={expenses}
@@ -246,31 +244,36 @@ export const App: React.FC = () => {
                 incomeTotal={incomeTotal}
                 expenseTotal={expenseTotal}
               />
-              <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
-                <SpendingCharts stats={stats} formatAmount={format} />
-              </div>
             </div>
-          </section>
+            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+              <SpendingCharts stats={stats} formatAmount={format} />
+            </div>
+          </div>
+        </section>
 
-          <section id="activity" className="flex flex-col gap-4 text-brand-highlight">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
-                Activity
-              </h2>
-              <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
-                {expenses.length} entries
-              </span>
+        <section id="activity" className="space-y-4 text-brand-highlight">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
+              Activity
+            </h2>
+            <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
+              {expenses.length} entries
+            </span>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+              <ExpenseList
+                expenses={expenses}
+                onEdit={(expense) => setEditingExpense(expense)}
+                onDelete={handleDeleteExpense}
+                formatAmount={format}
+              />
             </div>
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-              <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
-                <ExpenseList
-                  expenses={expenses}
-                  onEdit={(expense) => setEditingExpense(expense)}
-                  onDelete={handleDeleteExpense}
-                  formatAmount={format}
-                />
-              </div>
-              <div className="space-y-4">
+            <div className="space-y-4">
+              <section
+                id="drive"
+                className="border border-brand-line bg-brand-ocean/80 px-4 py-5 shadow-panel"
+              >
                 <GoogleDriveSyncPanel
                   isEnabled={drive.isEnabled}
                   isAuthenticated={drive.isAuthenticated}
@@ -285,24 +288,23 @@ export const App: React.FC = () => {
                   onPull={handlePullFromDrive}
                   onClearFeedback={clearFeedback}
                 />
-                <section className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
-                  <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-amber">
-                    Made for the road
-                  </h3>
-                  <p className="mt-3 text-[11px] text-brand-neutral">
-                    Install Money Map to your home screen for quick, offline access and sync updates
-                    whenever you connect.
-                  </p>
-                </section>
-              </div>
+              </section>
+              <section className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.28em] text-brand-amber">
+                  Made for the road
+                </h3>
+                <p className="mt-3 text-[11px] text-brand-neutral">
+                  Install Money Map to your home screen for quick, offline access and sync updates whenever you connect.
+                </p>
+              </section>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <footer className="mt-auto flex flex-col gap-3 border border-brand-line bg-brand-ocean/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-highlight md:flex-row md:items-center md:justify-between md:text-xs">
-            <span>Money Map · {currencyMeta.label}</span>
-            <span className="text-brand-accent">Offline ready · Drive sync secured</span>
-          </footer>
-        </div>
+        <footer className="flex flex-col gap-2 border border-brand-line bg-brand-ocean/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-highlight md:flex-row md:items-center md:justify-between md:text-xs">
+          <span>Money Map · {currencyMeta.label}</span>
+          <span className="text-brand-accent">Offline ready · Drive sync secured</span>
+        </footer>
       </main>
     </div>
   );
