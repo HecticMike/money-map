@@ -153,12 +153,7 @@ export const App: React.FC = () => {
       <PwaUpdater />
       <main className="mx-auto max-w-5xl px-3 py-8 space-y-6 text-brand-highlight md:px-6">
         <header className="flex flex-wrap items-end justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-14 w-14 place-items-center border border-brand-highlight bg-brand-highlight text-2xl font-semibold text-brand-midnight md:h-16 md:w-16 md:text-3xl">
-              M
-            </div>
-            <h1 className="text-3xl font-semibold text-brand-highlight md:text-4xl">Money Map</h1>
-          </div>
+          <h1 className="text-3xl font-semibold text-brand-highlight md:text-4xl">Money Map</h1>
           <div className="flex items-center gap-3 border border-brand-line bg-brand-ocean/60 px-4 py-2 text-[11px] uppercase tracking-[0.25em] text-brand-highlight md:text-xs">
             <span className="text-brand-neutral">Currency</span>
             <div className="flex gap-2">

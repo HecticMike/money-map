@@ -72,14 +72,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
       maintainAspectRatio: true,
       plugins: {
         legend: {
-          position: 'bottom' as const,
-          labels: {
-            color: '#fef3c7',
-            font: {
-              family: '"Space Grotesk", sans-serif',
-              size: 10
-            }
-          }
+          display: false
         },
         tooltip: {
           callbacks: {
