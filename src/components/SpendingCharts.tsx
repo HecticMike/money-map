@@ -58,6 +58,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
   const categoryChartOptions = useMemo(
     () => ({
       responsive: true,
+      maintainAspectRatio: true,
       plugins: {
         legend: {
           position: 'bottom' as const,
@@ -84,7 +85,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
           bodyColor: '#fef3c7'
         }
       },
-      cutout: '60%'
+      cutout: '65%'
     }),
     [formatAmount]
   );
@@ -163,14 +164,16 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
   );
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 sm:px-5">
+    <div className="grid gap-4">
+      <div className="border border-brand-line bg-brand-ocean/80 px-3 py-4 sm:px-4">
         <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
           Income vs outgoings
         </h3>
         {categoryChartData.labels.length > 0 ? (
-          <div className="mt-6">
-            <Doughnut data={categoryChartData} options={categoryChartOptions} />
+          <div className="mt-6 flex justify-center">
+            <div className="h-48 w-48">
+              <Doughnut data={categoryChartData} options={categoryChartOptions} />
+            </div>
           </div>
         ) : (
           <p className="mt-4 text-[11px] text-brand-highlight">
@@ -178,7 +181,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
           </p>
         )}
       </div>
-      <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 sm:px-5">
+      <div className="border border-brand-line bg-brand-ocean/80 px-3 py-4 sm:px-4">
         <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
           Monthly trend
         </h3>

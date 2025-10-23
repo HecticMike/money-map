@@ -234,8 +234,8 @@ export const App: React.FC = () => {
           <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
             Insights
           </h2>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)]">
+            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 overflow-hidden">
               <SummaryGrid
                 stats={stats}
                 expenses={expenses}
@@ -245,7 +245,7 @@ export const App: React.FC = () => {
                 expenseTotal={expenseTotal}
               />
             </div>
-            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-4">
               <SpendingCharts stats={stats} formatAmount={format} />
             </div>
           </div>
