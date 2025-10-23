@@ -8,7 +8,7 @@ import { GoogleDriveSyncPanel } from './components/GoogleDriveSyncPanel';
 import { PwaUpdater } from './components/PwaUpdater';
 import { useExpenses } from './hooks/useExpenses';
 import { useDriveContext, DRIVE_FILE_TITLE } from './contexts/DriveContext';
-import { downloadExpensesFromDrive, uploadExpensesToDrive } from './utils/googleDrive';
+import { downloadExpensesFromDrive, uploadExpensesToDrive, ensureDriveFile } from './utils/googleDrive';
 import { useCurrency, CURRENCY_SELECT_OPTIONS, type SupportedCurrency } from './hooks/useCurrency';
 
 export const App: React.FC = () => {
@@ -102,18 +102,27 @@ export const App: React.FC = () => {
 
   const handlePullFromDrive = async () => {
     if (!ensureAuthenticated()) return;
-    if (drive.accessToken == null || drive.fileId == null) {
-      drive.setError('No backup found yet. Push your entries to create one.');
+    if (drive.accessToken == null) {
+      drive.setError('Access token missing. Please reconnect Google Drive.');
       return;
     }
     setIsSyncing(true);
     drive.setStatus('syncing');
     try {
+      const fileId =
+        drive.fileId ??
+        (await ensureDriveFile({
+          accessToken: drive.accessToken,
+          fileId: null,
+          fileName: 'money-map-data.json'
+        }));
+
       const remote = await downloadExpensesFromDrive({
         accessToken: drive.accessToken,
-        fileId: drive.fileId
+        fileId
       });
       replaceExpenses(remote.expenses);
+      drive.setFileId(fileId);
       drive.setLastSyncedAt(remote.syncedAt);
       drive.setStatus('success');
       setMessage('Latest backup imported from Drive.');
