@@ -28,30 +28,41 @@ interface SpendingChartsProps {
 }
 
 export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmount }) => {
-  const categoryChartData = useMemo(() => {
-    const labels: string[] = [];
-    const data: number[] = [];
-    const colors: string[] = [];
+  const { chartData, legend } = useMemo(() => {
+    const entries = Object.entries(stats.byCategory)
+      .filter(([, value]) => value > 0)
+      .map(([key, value]) => {
+        const meta = CATEGORY_META[key as keyof typeof CATEGORY_META];
+        return {
+          label: meta.label,
+          color: meta.color,
+          value: Number(value.toFixed(2))
+        };
+      });
 
-    Object.entries(stats.byCategory).forEach(([key, value]) => {
-      if (value <= 0) return;
-      const meta = CATEGORY_META[key as keyof typeof CATEGORY_META];
-      labels.push(meta.label);
-      data.push(Number(value.toFixed(2)));
-      colors.push(meta.color);
-    });
+    const total = entries.reduce((sum, item) => sum + item.value, 0);
+    const sorted = entries
+      .map((item) => ({
+        ...item,
+        percent: total === 0 ? 0 : Math.round((item.value / total) * 100)
+      }))
+      .filter((item) => item.percent > 0)
+      .sort((a, b) => b.percent - a.percent);
 
     return {
-      labels,
-      datasets: [
-        {
-          label: 'Income vs outgoings',
-          data,
-          backgroundColor: colors,
-          borderWidth: 1,
-          borderColor: '#1f2647'
-        }
-      ]
+      chartData: {
+        labels: sorted.map((item) => item.label),
+        datasets: [
+          {
+            label: 'Income vs outgoings',
+            data: sorted.map((item) => item.value),
+            backgroundColor: sorted.map((item) => item.color),
+            borderWidth: 1,
+            borderColor: '#1f2647'
+          }
+        ]
+      },
+      legend: sorted
     };
   }, [stats.byCategory]);
 
@@ -169,12 +180,28 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
         <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
           Income vs outgoings
         </h3>
-        {categoryChartData.labels.length > 0 ? (
-          <div className="mt-6 flex justify-center">
+        {legend.length > 0 ? (
+          <>
+            <div className="mt-4 flex justify-center">
             <div className="h-48 w-48">
-              <Doughnut data={categoryChartData} options={categoryChartOptions} />
+                <Doughnut data={chartData} options={categoryChartOptions} />
             </div>
           </div>
+            <ul className="mt-4 grid gap-2 text-[11px] text-brand-highlight">
+              {legend.map((item) => (
+                <li key={item.label} className="flex items-center gap-3">
+                  <span
+                    className="h-2.5 w-2.5 border border-brand-line"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="flex-1">
+                    {item.label}
+                  </span>
+                  <span className="text-brand-neutral">{item.percent}%</span>
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
           <p className="mt-4 text-[11px] text-brand-highlight">
             Categorise expenses to see where your money flows.
