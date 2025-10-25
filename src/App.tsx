@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { CATEGORY_META, type Expense, type ExpenseDraft } from './types';
+import { formatISO, parseISO, startOfDay, startOfMonth, startOfYear, subMonths } from 'date-fns';
+import { CATEGORY_META, type Expense, type ExpenseDraft, type ExpenseStats } from './types';
 import { ExpenseForm } from './components/ExpenseForm';
 import { SummaryGrid } from './components/SummaryGrid';
 import { SpendingCharts } from './components/SpendingCharts';
@@ -20,30 +21,102 @@ const navItems = [
   { id: 'drive', label: 'Backup' }
 ];
 
+const INSIGHTS_RANGE_OPTIONS = [
+  { id: '1m', label: '1M' },
+  { id: '3m', label: '3M' },
+  { id: '6m', label: '6M' },
+  { id: 'ytd', label: 'YTD' },
+  { id: 'all', label: 'All' }
+] as const;
+
+type InsightsRange = (typeof INSIGHTS_RANGE_OPTIONS)[number]['id'];
+
 const createDefaultActivityFilters = (): ActivityFiltersState => ({
   query: '',
   type: 'all',
   category: 'all'
 });
 
+const getInsightsRangeStart = (range: InsightsRange): Date | null => {
+  const now = new Date();
+  switch (range) {
+    case '1m':
+      return startOfDay(subMonths(now, 1));
+    case '3m':
+      return startOfDay(subMonths(now, 3));
+    case '6m':
+      return startOfDay(subMonths(now, 6));
+    case 'ytd':
+      return startOfYear(now);
+    case 'all':
+    default:
+      return null;
+  }
+};
+
 export const App: React.FC = () => {
-  const {
-    expenses,
-    stats,
-    incomeTotal,
-    expenseTotal,
-    addExpense,
-    updateExpense,
-    deleteExpense,
-    replaceExpenses
-  } = useExpenses();
+  const { expenses, addExpense, updateExpense, deleteExpense, replaceExpenses } = useExpenses();
   const drive = useDriveContext();
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const { currency, setCurrency, meta: currencyMeta, format } = useCurrency();
+  const [insightsRange, setInsightsRange] = useState<InsightsRange>('1m');
   const [activityFilters, setActivityFilters] = useState<ActivityFiltersState>(() =>
     createDefaultActivityFilters()
+  );
+  const insightsExpenses = useMemo(() => {
+    const start = getInsightsRangeStart(insightsRange);
+    if (start == null) return expenses;
+    return expenses.filter((expense) => {
+      const date = new Date(expense.date);
+      if (Number.isNaN(date.getTime())) return false;
+      return date >= start;
+    });
+  }, [expenses, insightsRange]);
+  const insightsStats = useMemo<ExpenseStats>(() => {
+    const byCategory = Object.keys(CATEGORY_META).reduce<Record<string, number>>((acc, key) => {
+      acc[key] = 0;
+      return acc;
+    }, {});
+    const monthlyMap = new Map<string, number>();
+    let total = 0;
+
+    insightsExpenses.forEach((expense) => {
+      const amount = Number(expense.amount);
+      total += amount;
+      byCategory[expense.category] = (byCategory[expense.category] ?? 0) + amount;
+
+      const monthKey = formatISO(startOfMonth(parseISO(expense.date)));
+      monthlyMap.set(monthKey, (monthlyMap.get(monthKey) ?? 0) + amount);
+    });
+
+    const monthlyTotals = Array.from(monthlyMap.entries())
+      .map(([month, value]) => ({
+        month,
+        total: value
+      }))
+      .sort((a, b) => (a.month > b.month ? 1 : -1));
+
+    return {
+      total,
+      byCategory: byCategory as ExpenseStats['byCategory'],
+      monthlyTotals
+    };
+  }, [insightsExpenses]);
+  const insightsIncomeTotal = useMemo(
+    () =>
+      insightsExpenses.reduce((sum, entry) => {
+        return CATEGORY_META[entry.category].type === 'income' ? sum + entry.amount : sum;
+      }, 0),
+    [insightsExpenses]
+  );
+  const insightsExpenseTotal = useMemo(
+    () =>
+      insightsExpenses.reduce((sum, entry) => {
+        return CATEGORY_META[entry.category].type === 'expense' ? sum + entry.amount : sum;
+      }, 0),
+    [insightsExpenses]
   );
   const filteredExpenses = useMemo(() => {
     const query = activityFilters.query.trim().toLowerCase();
@@ -104,6 +177,10 @@ export const App: React.FC = () => {
     if (confirmed) {
       deleteExpense(expense.id);
     }
+  };
+
+  const handleInsightsRangeChange = (range: InsightsRange) => {
+    setInsightsRange(range);
   };
 
   const handleActivityFiltersChange = (updates: Partial<ActivityFiltersState>) => {
@@ -286,22 +363,44 @@ export const App: React.FC = () => {
         </section>
 
         <section id="insights" className="space-y-4 text-brand-highlight">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
-            Insights
-          </h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
+              Insights
+            </h2>
+            <div className="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.25em]">
+              {INSIGHTS_RANGE_OPTIONS.map((option) => {
+                const isActive = insightsRange === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => handleInsightsRangeChange(option.id)}
+                    aria-pressed={isActive}
+                    className={`border px-3 py-1 transition ${
+                      isActive
+                        ? 'border-brand-highlight bg-brand-highlight text-brand-midnight'
+                        : 'border-brand-line text-brand-highlight hover:border-brand-highlight hover:text-brand-amber'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,340px)]">
             <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5 overflow-hidden">
               <SummaryGrid
-                stats={stats}
-                expenses={expenses}
+                stats={insightsStats}
+                expenses={insightsExpenses}
                 formatAmount={format}
                 currencyLabel={currencyLabel}
-                incomeTotal={incomeTotal}
-                expenseTotal={expenseTotal}
+                incomeTotal={insightsIncomeTotal}
+                expenseTotal={insightsExpenseTotal}
               />
             </div>
             <div className="border border-brand-line bg-brand-ocean/80 px-4 py-4">
-              <SpendingCharts stats={stats} formatAmount={format} />
+              <SpendingCharts stats={insightsStats} formatAmount={format} />
             </div>
           </div>
         </section>

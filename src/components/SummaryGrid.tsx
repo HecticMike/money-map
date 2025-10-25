@@ -72,7 +72,7 @@ export const SummaryGrid: React.FC<SummaryGridProps> = ({
             </p>
           </>
         ) : (
-          <p className="mt-3 text-sm font-semibold text-brand-highlight">Add your first entry</p>
+          <p className="mt-3 text-sm font-semibold text-brand-highlight">No activity in this range yet</p>
         )}
       </div>
     </div>
