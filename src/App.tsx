@@ -10,6 +10,7 @@ import { PwaUpdater } from './components/PwaUpdater';
 import { useExpenses } from './hooks/useExpenses';
 import { useDriveContext, DRIVE_FILE_TITLE } from './contexts/DriveContext';
 import { downloadExpensesFromDrive, uploadExpensesToDrive, ensureDriveFile } from './utils/googleDrive';
+import { exportExpensesToExcel } from './utils/exportToExcel';
 import { useCurrency, CURRENCY_SELECT_OPTIONS, type SupportedCurrency } from './hooks/useCurrency';
 
 const navItems = [
@@ -114,6 +115,14 @@ export const App: React.FC = () => {
 
   const handleResetActivityFilters = () => {
     setActivityFilters(createDefaultActivityFilters());
+  };
+
+  const handleExportActivity = () => {
+    if (filteredExpenses.length === 0) return;
+    exportExpensesToExcel(filteredExpenses, {
+      currencyLabel: currencyMeta.label,
+      currencyCode: currency
+    });
   };
 
   const ensureAuthenticated = () => {
@@ -298,13 +307,23 @@ export const App: React.FC = () => {
         </section>
 
         <section id="activity" className="space-y-4 text-brand-highlight">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-[0.32em] text-brand-amber">
               Activity
             </h2>
-            <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
-              {activityCountLabel}
-            </span>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
+                {activityCountLabel}
+              </span>
+              <button
+                type="button"
+                onClick={handleExportActivity}
+                disabled={filteredExpenses.length === 0}
+                className="border border-brand-line bg-brand-highlight px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-midnight transition hover:bg-brand-amber disabled:cursor-not-allowed disabled:bg-brand-slate/50 disabled:text-brand-midnight/60"
+              >
+                Export to Excel
+              </button>
+            </div>
           </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="space-y-4 border border-brand-line bg-brand-ocean/80 px-4 py-5">

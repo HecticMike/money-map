@@ -30,15 +30,16 @@ interface SpendingChartsProps {
 export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmount }) => {
   const { chartData, legend } = useMemo(() => {
     const entries = Object.entries(stats.byCategory)
-      .filter(([, value]) => value > 0)
       .map(([key, value]) => {
         const meta = CATEGORY_META[key as keyof typeof CATEGORY_META];
-        return {
-          label: meta.label,
-          color: meta.color,
-          value: Number(value.toFixed(2))
-        };
-      });
+        return { key, value, meta };
+      })
+      .filter(({ value, meta }) => meta.type === 'expense' && value > 0)
+      .map(({ meta, value }) => ({
+        label: meta.label,
+        color: meta.color,
+        value: Number(value.toFixed(2))
+      }));
 
     const total = entries.reduce((sum, item) => sum + item.value, 0);
     const sorted = entries
@@ -54,7 +55,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
         labels: sorted.map((item) => item.label),
         datasets: [
           {
-            label: 'Income vs outgoings',
+            label: 'Spending breakdown',
             data: sorted.map((item) => item.value),
             backgroundColor: sorted.map((item) => item.color),
             borderWidth: 1,
@@ -171,7 +172,7 @@ export const SpendingCharts: React.FC<SpendingChartsProps> = ({ stats, formatAmo
     <div className="grid gap-4">
       <div className="border border-brand-line bg-brand-ocean/80 px-3 py-4 sm:px-4">
         <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-amber sm:text-sm">
-          Income vs outgoings
+          Spending breakdown
         </h3>
         {legend.length > 0 ? (
           <>
