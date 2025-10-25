@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import type { Expense, ExpenseDraft } from './types';
+import { useMemo, useState } from 'react';
+import { CATEGORY_META, type Expense, type ExpenseDraft } from './types';
 import { ExpenseForm } from './components/ExpenseForm';
 import { SummaryGrid } from './components/SummaryGrid';
 import { SpendingCharts } from './components/SpendingCharts';
 import { ExpenseList } from './components/ExpenseList';
+import { ActivityFilters, type ActivityFiltersState } from './components/ActivityFilters';
 import { GoogleDriveSyncPanel } from './components/GoogleDriveSyncPanel';
 import { PwaUpdater } from './components/PwaUpdater';
 import { useExpenses } from './hooks/useExpenses';
@@ -17,6 +18,12 @@ const navItems = [
   { id: 'activity', label: 'Activity' },
   { id: 'drive', label: 'Backup' }
 ];
+
+const createDefaultActivityFilters = (): ActivityFiltersState => ({
+  query: '',
+  type: 'all',
+  category: 'all'
+});
 
 export const App: React.FC = () => {
   const {
@@ -34,6 +41,39 @@ export const App: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const { currency, setCurrency, meta: currencyMeta, format } = useCurrency();
+  const [activityFilters, setActivityFilters] = useState<ActivityFiltersState>(() =>
+    createDefaultActivityFilters()
+  );
+  const filteredExpenses = useMemo(() => {
+    const query = activityFilters.query.trim().toLowerCase();
+
+    return expenses.filter((expense) => {
+      if (activityFilters.type !== 'all') {
+        const isIncome = CATEGORY_META[expense.category].type === 'income';
+        if (activityFilters.type === 'income' && !isIncome) return false;
+        if (activityFilters.type === 'expense' && isIncome) return false;
+      }
+
+      if (activityFilters.category !== 'all' && expense.category !== activityFilters.category) {
+        return false;
+      }
+
+      if (query.length > 0) {
+        const noteText = expense.note.toLowerCase();
+        const categoryLabel = CATEGORY_META[expense.category].label.toLowerCase();
+        return noteText.includes(query) || categoryLabel.includes(query);
+      }
+
+      return true;
+    });
+  }, [expenses, activityFilters]);
+  const hasActiveFilters =
+    activityFilters.type !== 'all' ||
+    activityFilters.category !== 'all' ||
+    activityFilters.query.trim().length > 0;
+  const activityCountLabel = hasActiveFilters
+    ? `${filteredExpenses.length} of ${expenses.length} entries`
+    : `${expenses.length} entries`;
 
   const currencyLabel =
     CURRENCY_SELECT_OPTIONS.find((option) => option.code === currency)?.label ?? currency;
@@ -63,6 +103,17 @@ export const App: React.FC = () => {
     if (confirmed) {
       deleteExpense(expense.id);
     }
+  };
+
+  const handleActivityFiltersChange = (updates: Partial<ActivityFiltersState>) => {
+    setActivityFilters((previous) => ({
+      ...previous,
+      ...updates
+    }));
+  };
+
+  const handleResetActivityFilters = () => {
+    setActivityFilters(createDefaultActivityFilters());
   };
 
   const ensureAuthenticated = () => {
@@ -252,16 +303,24 @@ export const App: React.FC = () => {
               Activity
             </h2>
             <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
-              {expenses.length} entries
+              {activityCountLabel}
             </span>
           </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <div className="border border-brand-line bg-brand-ocean/80 px-4 py-5">
+            <div className="space-y-4 border border-brand-line bg-brand-ocean/80 px-4 py-5">
+              <ActivityFilters
+                value={activityFilters}
+                onChange={handleActivityFiltersChange}
+                onReset={handleResetActivityFilters}
+              />
               <ExpenseList
-                expenses={expenses}
+                expenses={filteredExpenses}
                 onEdit={(expense) => setEditingExpense(expense)}
                 onDelete={handleDeleteExpense}
                 formatAmount={format}
+                emptyMessage={
+                  hasActiveFilters ? 'No entries match the current filters.' : undefined
+                }
               />
             </div>
             <div className="space-y-4">

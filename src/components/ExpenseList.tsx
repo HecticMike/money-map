@@ -6,13 +6,20 @@ interface ExpenseListProps {
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
   formatAmount: (value: number) => string;
+  emptyMessage?: string;
 }
 
-export const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onEdit, onDelete, formatAmount }) => {
+export const ExpenseList: React.FC<ExpenseListProps> = ({
+  expenses,
+  onEdit,
+  onDelete,
+  formatAmount,
+  emptyMessage
+}) => {
   if (expenses.length === 0) {
     return (
       <div className="border border-brand-line bg-brand-ocean/70 px-5 py-8 text-center text-[11px] text-brand-highlight">
-        No entries yet. Add your first entry to build your Money Map.
+        {emptyMessage ?? 'No entries yet. Add your first entry to build your Money Map.'}
       </div>
     );
   }
