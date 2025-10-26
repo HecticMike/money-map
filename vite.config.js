@@ -11,9 +11,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: [
                 'favicon.svg',
-                'apple-touch-icon-v4.png',
-                'icons/icon-192-v4.png',
-                'icons/icon-512-v4.png'
+                'apple-touch-icon-v5.png',
+                'icons/icon-192-v5.png',
+                'icons/icon-512-v5.png'
             ],
             manifest: {
                 name: 'Money Map',
@@ -25,8 +25,8 @@ export default defineConfig({
                 start_url: './', // keep relative for PWA on subpath
                 scope: './',
                 icons: [
-                    { src: 'icons/icon-192-v4.png', sizes: '192x192', type: 'image/png' },
-                    { src: 'icons/icon-512-v4.png', sizes: '512x512', type: 'image/png' }
+                    { src: 'icons/icon-192-v5.png', sizes: '192x192', type: 'image/png' },
+                    { src: 'icons/icon-512-v5.png', sizes: '512x512', type: 'image/png' }
                 ]
             },
             workbox: {
