@@ -18,7 +18,7 @@ interface ExpenseFormProps {
   currencySymbol: string;
 }
 
-const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'living_home_groceries';
+const DEFAULT_CATEGORY: ExpenseDraft['category'] = 'living_home_supermarket';
 
 const expenseOptions = (
   Object.entries(CATEGORY_META) as Array<

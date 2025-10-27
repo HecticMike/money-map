@@ -1,7 +1,7 @@
 ﻿export type ExpenseCategory =
   | 'living_home_rent'
   | 'living_home_utilities'
-  | 'living_home_groceries'
+  | 'living_home_supermarket'
   | 'living_home_home_garden'
   | 'mobility_transport_fuel'
   | 'mobility_transport_car_maintenance'
@@ -52,7 +52,7 @@ export const CATEGORY_META: Record<
 > = {
   living_home_rent: { label: 'Rent', color: '#6366f1', type: 'expense' },
   living_home_utilities: { label: 'Utilities', color: '#facc15', type: 'expense' },
-  living_home_groceries: { label: 'Supermarket', color: '#f97316', type: 'expense' },
+  living_home_supermarket: { label: 'Supermarket', color: '#f97316', type: 'expense' },
   living_home_home_garden: { label: 'Home & Garden', color: '#84cc16', type: 'expense' },
   mobility_transport_fuel: { label: 'Fuel', color: '#22d3ee', type: 'expense' },
   mobility_transport_car_maintenance: { label: 'Car Maintenance', color: '#0ea5e9', type: 'expense' },
