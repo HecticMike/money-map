@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatISO, parseISO, startOfDay, startOfMonth, startOfYear, subMonths } from 'date-fns';
 import { CATEGORY_META, type Expense, type ExpenseDraft, type ExpenseStats } from './types';
 import { ExpenseForm } from './components/ExpenseForm';
 import { SummaryGrid } from './components/SummaryGrid';
 import { SpendingCharts } from './components/SpendingCharts';
 import { ExpenseList } from './components/ExpenseList';
+import { BackToTopButton } from './components/BackToTopButton';
 import { ActivityFilters, type ActivityFiltersState } from './components/ActivityFilters';
 import { GoogleDriveSyncPanel } from './components/GoogleDriveSyncPanel';
 import { PwaUpdater } from './components/PwaUpdater';
@@ -65,6 +66,7 @@ export const App: React.FC = () => {
   const [activityFilters, setActivityFilters] = useState<ActivityFiltersState>(() =>
     createDefaultActivityFilters()
   );
+  const [showAllActivity, setShowAllActivity] = useState(false);
   const insightsExpenses = useMemo(() => {
     const start = getInsightsRangeStart(insightsRange);
     if (start == null) return expenses;
@@ -148,6 +150,11 @@ export const App: React.FC = () => {
   const activityCountLabel = hasActiveFilters
     ? `${filteredExpenses.length} of ${expenses.length} entries`
     : `${expenses.length} entries`;
+  const hasMoreExpenses = filteredExpenses.length > 25;
+  const visibleExpenses = useMemo(
+    () => (showAllActivity || !hasMoreExpenses ? filteredExpenses : filteredExpenses.slice(0, 25)),
+    [filteredExpenses, hasMoreExpenses, showAllActivity]
+  );
 
   const currencyLabel =
     CURRENCY_SELECT_OPTIONS.find((option) => option.code === currency)?.label ?? currency;
@@ -193,6 +200,20 @@ export const App: React.FC = () => {
   const handleResetActivityFilters = () => {
     setActivityFilters(createDefaultActivityFilters());
   };
+
+  const handleToggleActivityLength = () => {
+    setShowAllActivity((previous) => !previous);
+  };
+
+  useEffect(() => {
+    setShowAllActivity(false);
+  }, [activityFilters]);
+
+  useEffect(() => {
+    if (!hasMoreExpenses) {
+      setShowAllActivity(false);
+    }
+  }, [hasMoreExpenses]);
 
   const handleExportActivity = () => {
     if (filteredExpenses.length === 0) return;
@@ -414,6 +435,17 @@ export const App: React.FC = () => {
               <span className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight">
                 {activityCountLabel}
               </span>
+              {hasMoreExpenses ? (
+                <button
+                  type="button"
+                  onClick={handleToggleActivityLength}
+                  className="border border-brand-line bg-brand-ocean/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-highlight transition hover:border-brand-highlight hover:text-brand-amber"
+                >
+                  {showAllActivity
+                    ? 'Show latest 25'
+                    : `Show all (${filteredExpenses.length})`}
+                </button>
+              ) : null}
               <button
                 type="button"
                 onClick={handleExportActivity}
@@ -431,8 +463,13 @@ export const App: React.FC = () => {
                 onChange={handleActivityFiltersChange}
                 onReset={handleResetActivityFilters}
               />
+              {!showAllActivity && hasMoreExpenses ? (
+                <p className="text-[10px] uppercase tracking-[0.25em] text-brand-neutral">
+                  Showing the latest 25 entries. Choose “Show all” to view older activity.
+                </p>
+              ) : null}
               <ExpenseList
-                expenses={filteredExpenses}
+                expenses={visibleExpenses}
                 onEdit={(expense) => setEditingExpense(expense)}
                 onDelete={handleDeleteExpense}
                 formatAmount={format}
@@ -473,9 +510,10 @@ export const App: React.FC = () => {
           </div>
         </section>
 
-        <footer className="flex flex-col gap-2 border border-brand-line bg-brand-ocean/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-highlight md:flex-row md:items-center md:justify-between md:text-xs">
-          <span>Money Map · {currencyMeta.label}</span>
-          <span className="text-brand-accent">Offline ready · Drive sync secured</span>
+        <footer className="flex flex-col gap-3 border border-brand-line bg-brand-ocean/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-highlight md:flex-row md:items-center md:justify-between md:text-xs">
+          <span>Money Map - {currencyMeta.label}</span>
+          <span className="text-brand-accent">Offline ready - Drive sync secured</span>
+          <BackToTopButton />
         </footer>
       </main>
     </div>
