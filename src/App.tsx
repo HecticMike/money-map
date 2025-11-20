@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatISO, parseISO, startOfDay, startOfMonth, startOfYear, subMonths } from 'date-fns';
 import { CATEGORY_META, type Expense, type ExpenseDraft, type ExpenseStats } from './types';
 import { ExpenseForm } from './components/ExpenseForm';
@@ -67,6 +67,7 @@ export const App: React.FC = () => {
     createDefaultActivityFilters()
   );
   const [showAllActivity, setShowAllActivity] = useState(false);
+  const captureSectionRef = useRef<HTMLElement | null>(null);
   const insightsExpenses = useMemo(() => {
     const start = getInsightsRangeStart(insightsRange);
     if (start == null) return expenses;
@@ -184,6 +185,14 @@ export const App: React.FC = () => {
     if (confirmed) {
       deleteExpense(expense.id);
     }
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    captureSectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
   const handleInsightsRangeChange = (range: InsightsRange) => {
@@ -348,6 +357,7 @@ export const App: React.FC = () => {
 
         <section
           id="capture"
+          ref={captureSectionRef}
           className="border border-brand-line bg-brand-ocean/75 px-4 py-5 shadow-panel sm:px-5"
         >
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
@@ -470,7 +480,7 @@ export const App: React.FC = () => {
               ) : null}
               <ExpenseList
                 expenses={visibleExpenses}
-                onEdit={(expense) => setEditingExpense(expense)}
+                onEdit={handleEditExpense}
                 onDelete={handleDeleteExpense}
                 formatAmount={format}
                 emptyMessage={

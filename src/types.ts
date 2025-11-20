@@ -18,6 +18,7 @@
   | 'leisure_lifestyle_eating_out'
   | 'leisure_lifestyle_entertainment'
   | 'leisure_lifestyle_travel_holidays'
+  | 'leisure_lifestyle_toys'
   | 'leisure_lifestyle_subscriptions'
   | 'income_salary'
   | 'income_other'
@@ -69,6 +70,7 @@ export const CATEGORY_META: Record<
   leisure_lifestyle_eating_out: { label: 'Eating Out', color: '#fb923c', type: 'expense' },
   leisure_lifestyle_entertainment: { label: 'Entertainment', color: '#ec4899', type: 'expense' },
   leisure_lifestyle_travel_holidays: { label: 'Travel & Holidays', color: '#8b5cf6', type: 'expense' },
+  leisure_lifestyle_toys: { label: 'Toys', color: '#f87171', type: 'expense' },
   leisure_lifestyle_subscriptions: { label: 'Subscriptions', color: '#94a3b8', type: 'expense' },
   income_salary: { label: 'Salary', color: '#facc15', type: 'income' },
   income_other: { label: 'Other income', color: '#bef264', type: 'income' },
