@@ -15,7 +15,8 @@ export const readExpensesFromStorage = (): Expense[] => {
       amount: Number(expense.amount),
       date: expense.date ?? new Date().toISOString(),
       createdAt: expense.createdAt ?? expense.date ?? new Date().toISOString(),
-      updatedAt: expense.updatedAt ?? expense.date ?? new Date().toISOString()
+      updatedAt: expense.updatedAt ?? expense.date ?? new Date().toISOString(),
+      user: expense.user ?? null
     }));
   } catch (error) {
     console.warn('Unable to parse expenses from localStorage', error);

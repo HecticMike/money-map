@@ -26,6 +26,7 @@ export const exportExpensesToExcel = (
       Type: isIncome ? 'Income' : 'Expense',
       Amount: isIncome ? expense.amount : -expense.amount,
       Currency: currencyLabel ?? currencyCode ?? '',
+      Person: expense.user ?? '',
       Note: expense.note,
       'Created At': formatDateSafe(expense.createdAt),
       'Updated At': formatDateSafe(expense.updatedAt),
@@ -40,6 +41,7 @@ export const exportExpensesToExcel = (
     { wch: 10 },
     { wch: 12 },
     { wch: 12 },
+    { wch: 14 },
     { wch: 40 },
     { wch: 20 },
     { wch: 20 },
@@ -54,4 +56,3 @@ export const exportExpensesToExcel = (
 
   writeFile(workbook, filename, { compression: true });
 };
-

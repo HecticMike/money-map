@@ -1,13 +1,21 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { formatISO } from 'date-fns';
-import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft } from '../types';
+import {
+  CATEGORY_META,
+  EXPENSE_USERS,
+  INCOME_CATEGORIES,
+  type Expense,
+  type ExpenseDraft,
+  type ExpenseUser
+} from '../types';
 
 interface ExpenseFormValues {
   amount: number | string;
   category: ExpenseDraft['category'];
   date: string;
   note: string;
+  user: ExpenseUser | '';
 }
 
 interface ExpenseFormProps {
@@ -34,7 +42,8 @@ const toFormValues = (expense?: Expense | null): ExpenseFormValues => {
       amount: '',
       category: DEFAULT_CATEGORY,
       date: formatISO(new Date(), { representation: 'date' }),
-      note: ''
+      note: '',
+      user: ''
     };
   }
 
@@ -42,7 +51,8 @@ const toFormValues = (expense?: Expense | null): ExpenseFormValues => {
     amount: expense.amount,
     category: expense.category,
     date: formatISO(new Date(expense.date), { representation: 'date' }),
-    note: expense.note
+    note: expense.note,
+    user: expense.user ?? ''
   };
 };
 
@@ -73,7 +83,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
       amount: Number(values.amount),
       category: values.category,
       date: dateISO,
-      note: values.note.trim()
+      note: values.note.trim(),
+      user: values.user === '' ? null : values.user
     });
     if (mode === 'create') {
       reset(toFormValues());
@@ -132,19 +143,37 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = ({
           </select>
         </label>
       </div>
-      <label className="flex flex-col gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
-          Date *
-        </span>
-        <input
-          type="date"
-          {...register('date', { required: true })}
-          className="w-full appearance-none border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
-        />
-        {errors.date != null ? (
-          <span className="text-[11px] text-brand-accent">Select a date</span>
-        ) : null}
-      </label>
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <label className="flex flex-col gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
+            Date *
+          </span>
+          <input
+            type="date"
+            {...register('date', { required: true })}
+            className="w-full appearance-none border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
+          />
+          {errors.date != null ? (
+            <span className="text-[11px] text-brand-accent">Select a date</span>
+          ) : null}
+        </label>
+        <label className="flex flex-col gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
+            Person
+          </span>
+          <select
+            {...register('user')}
+            className="w-full border border-brand-line bg-brand-midnight px-4 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
+          >
+            <option value="">Not set</option>
+            {EXPENSE_USERS.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
       <label className="flex flex-col gap-2">
         <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
           Note

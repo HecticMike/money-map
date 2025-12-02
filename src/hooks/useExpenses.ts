@@ -1,6 +1,6 @@
-﻿import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { formatISO, parseISO, startOfMonth } from "date-fns";
-import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft, type ExpenseStats } from "../types";
+import { CATEGORY_META, INCOME_CATEGORIES, type Expense, type ExpenseDraft, type ExpenseStats, type ExpenseUser } from "../types";
 import { readExpensesFromStorage, writeExpensesToStorage } from "../utils/storage";
 
 const createExpense = (draft: ExpenseDraft): Expense => {
@@ -16,7 +16,8 @@ const createExpense = (draft: ExpenseDraft): Expense => {
     date: base,
     note: draft.note,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    user: draft.user ?? null
   };
 };
 
@@ -25,7 +26,8 @@ const normaliseExpense = (expense: Expense): Expense => ({
   amount: Number(expense.amount),
   date: formatISO(new Date(expense.date)),
   createdAt: expense.createdAt ?? formatISO(new Date(expense.date)),
-  updatedAt: expense.updatedAt ?? formatISO(new Date())
+  updatedAt: expense.updatedAt ?? formatISO(new Date()),
+  user: expense.user ?? null
 });
 
 const getComparableTimestamp = (entry: Expense): number => {
@@ -64,7 +66,8 @@ export const useExpenses = () => {
               ...expense,
               ...updates,
               amount: updates.amount != null ? Number(updates.amount) : expense.amount,
-              updatedAt: new Date().toISOString()
+              updatedAt: new Date().toISOString(),
+              user: updates.user !== undefined ? updates.user ?? null : expense.user ?? null
             }
           : expense);
       return next.sort(sortByMostRecent);

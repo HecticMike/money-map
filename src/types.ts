@@ -24,6 +24,8 @@
   | 'income_other'
   | 'other';
 
+export type ExpenseUser = 'Miguel' | 'Ines';
+
 export interface Expense {
   id: string;
   amount: number;
@@ -32,6 +34,7 @@ export interface Expense {
   note: string;
   createdAt: string;
   updatedAt: string;
+  user: ExpenseUser | null;
 }
 
 export interface ExpenseDraft {
@@ -39,6 +42,7 @@ export interface ExpenseDraft {
   category: ExpenseCategory;
   date: string;
   note: string;
+  user: ExpenseUser | null;
 }
 
 export interface ExpenseStats {
@@ -79,6 +83,7 @@ export const CATEGORY_META: Record<
 
 export const INCOME_CATEGORIES: ExpenseCategory[] = ['income_salary', 'income_other'];
 
+export const EXPENSE_USERS: ExpenseUser[] = ['Miguel', 'Ines'];
 
 
 

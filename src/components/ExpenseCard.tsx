@@ -13,6 +13,7 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDel
   const formattedDate = format(new Date(expense.date), 'MMM d, yyyy');
   const isIncome = categoryMeta.type === 'income';
   const amountDisplay = formatAmount(isIncome ? expense.amount : -expense.amount);
+  const personLabel = expense.user ?? 'Not set';
 
   return (
     <article
@@ -24,12 +25,17 @@ export const ExpenseCard: React.FC<ExpenseCardProps> = ({ expense, onEdit, onDel
           <span className={`text-base font-semibold ${isIncome ? 'text-emerald-300' : 'text-brand-highlight'}`}>
             {isIncome ? `+${amountDisplay}` : amountDisplay}
           </span>
-          <span
-            className="border border-brand-line bg-brand-ocean/70 px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.25em]"
-            style={{ color: categoryMeta.color }}
-          >
-            {categoryMeta.label}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className="border border-brand-line bg-brand-ocean/70 px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.25em]"
+              style={{ color: categoryMeta.color }}
+            >
+              {categoryMeta.label}
+            </span>
+            <span className="border border-brand-line/80 bg-brand-ocean/50 px-2 py-[3px] text-[10px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
+              {personLabel}
+            </span>
+          </div>
         </div>
         {expense.note.length > 0 ? (
           <p className="text-[11px] text-brand-neutral">{expense.note}</p>

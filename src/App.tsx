@@ -35,7 +35,8 @@ type InsightsRange = (typeof INSIGHTS_RANGE_OPTIONS)[number]['id'];
 const createDefaultActivityFilters = (): ActivityFiltersState => ({
   query: '',
   type: 'all',
-  category: 'all'
+  category: 'all',
+  user: 'all'
 });
 
 const getInsightsRangeStart = (range: InsightsRange): Date | null => {
@@ -135,6 +136,14 @@ export const App: React.FC = () => {
         return false;
       }
 
+      if (activityFilters.user !== 'all') {
+        if (activityFilters.user === 'unassigned') {
+          if (expense.user != null) return false;
+        } else if (expense.user !== activityFilters.user) {
+          return false;
+        }
+      }
+
       if (query.length > 0) {
         const noteText = expense.note.toLowerCase();
         const categoryLabel = CATEGORY_META[expense.category].label.toLowerCase();
@@ -147,6 +156,7 @@ export const App: React.FC = () => {
   const hasActiveFilters =
     activityFilters.type !== 'all' ||
     activityFilters.category !== 'all' ||
+    activityFilters.user !== 'all' ||
     activityFilters.query.trim().length > 0;
   const activityCountLabel = hasActiveFilters
     ? `${filteredExpenses.length} of ${expenses.length} entries`
@@ -175,7 +185,8 @@ export const App: React.FC = () => {
       amount: draft.amount,
       category: draft.category,
       date: draft.date,
-      note: draft.note
+      note: draft.note,
+      user: draft.user
     });
     setEditingExpense(null);
   };

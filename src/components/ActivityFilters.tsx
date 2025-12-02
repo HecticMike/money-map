@@ -1,10 +1,11 @@
 import { type ChangeEvent, useMemo } from "react";
-import { CATEGORY_META, type ExpenseCategory } from "../types";
+import { CATEGORY_META, EXPENSE_USERS, type ExpenseCategory, type ExpenseUser } from "../types";
 
 export type ActivityFiltersState = {
   query: string;
   type: "all" | "income" | "expense";
   category: ExpenseCategory | "all";
+  user: ExpenseUser | "all" | "unassigned";
 };
 
 interface ActivityFiltersProps {
@@ -18,7 +19,10 @@ const expenseCategories = Object.entries(CATEGORY_META).filter(([, meta]) => met
 
 export const ActivityFilters: React.FC<ActivityFiltersProps> = ({ value, onChange, onReset }) => {
   const hasActiveFilters =
-    value.type !== "all" || value.category !== "all" || value.query.trim().length > 0;
+    value.type !== "all" ||
+    value.category !== "all" ||
+    value.user !== "all" ||
+    value.query.trim().length > 0;
 
   const categoryGroups = useMemo(() => {
     const groups: Array<{ label: string; options: typeof expenseCategories }> = [];
@@ -35,8 +39,9 @@ export const ActivityFilters: React.FC<ActivityFiltersProps> = ({ value, onChang
   }, [value.type]);
 
   const handleSelectChange =
-    (field: "type" | "category") => (event: ChangeEvent<HTMLSelectElement>) => {
-      const nextValue = event.target.value as ActivityFiltersState[typeof field];
+    <Field extends "type" | "category" | "user">(field: Field) =>
+    (event: ChangeEvent<HTMLSelectElement>) => {
+      const nextValue = event.target.value as ActivityFiltersState[Field];
       onChange({ [field]: nextValue } as Partial<ActivityFiltersState>);
     };
 
@@ -73,7 +78,7 @@ export const ActivityFilters: React.FC<ActivityFiltersProps> = ({ value, onChang
         />
       </label>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-3">
         <label className="flex flex-col gap-2 text-brand-highlight">
           <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
             Type
@@ -108,6 +113,25 @@ export const ActivityFilters: React.FC<ActivityFiltersProps> = ({ value, onChang
                 ))}
               </optgroup>
             ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-2 text-brand-highlight">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-brand-neutral">
+            Person
+          </span>
+          <select
+            value={value.user}
+            onChange={handleSelectChange("user")}
+            className="w-full border border-brand-line bg-brand-midnight px-3 py-2 text-sm text-brand-highlight focus:border-brand-highlight focus:outline-none focus:ring-0"
+          >
+            <option value="all">All</option>
+            {EXPENSE_USERS.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+            <option value="unassigned">Not set</option>
           </select>
         </label>
       </div>
